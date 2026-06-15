@@ -1,3 +1,16 @@
+import HelperIllustration from './HelperIllustration.jsx'
+
+const helperCards = [
+  ['communication', 'Communication Support'],
+  ['sensory', 'Sensory Overload'],
+  ['calm', 'Calm Strategy'],
+  ['routine', 'Routine Change'],
+  ['meltdown', 'Meltdown Support'],
+  ['shutdown', 'Shutdown Support'],
+  ['help', 'Asking for Help'],
+  ['caregiver', 'Caregiver Support'],
+]
+
 function HomeScreen({
   selectedSituation,
   situations,
@@ -47,6 +60,18 @@ function HomeScreen({
       <p className="privacy-note">
         Saved profiles and strategies stay on this device only.
       </p>
+
+      <section className="helper-card-section" aria-labelledby="helper-card-title">
+        <h2 id="helper-card-title">Guide areas</h2>
+        <div className="helper-card-grid">
+          {helperCards.map(([type, title]) => (
+            <article className="helper-card" key={type}>
+              <HelperIllustration type={type} />
+              <h3>{title}</h3>
+            </article>
+          ))}
+        </div>
+      </section>
     </div>
   )
 }

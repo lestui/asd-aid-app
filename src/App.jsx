@@ -168,8 +168,14 @@ function App() {
     <main className="app-shell">
       <section className="support-card" aria-labelledby="app-title">
         <header className={currentView === 'home' ? 'hero' : 'hero compact'}>
-          <p className="eyebrow">MVP support guide</p>
-          <h1 id="app-title">ASD Aid</h1>
+          <img
+            className="brand-logo"
+            src="/asd-helper-guide-logo.svg"
+            alt=""
+            aria-hidden="true"
+          />
+          <p className="eyebrow">Support guide</p>
+          <h1 id="app-title">ASD Helper Guide</h1>
           <p className="subtitle">
             A calm decision-support tool for daily autism and ADHD challenges.
           </p>
