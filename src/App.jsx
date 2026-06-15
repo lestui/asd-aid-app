@@ -86,6 +86,59 @@ const bodyBehaviourFlow = [
   },
 ]
 
+const schoolTransitionFlow = [
+  {
+    key: 'struggle',
+    question: 'What is the main struggle right now?',
+    options: [
+      'refusing to go',
+      'crying/clinging',
+      'running away/hiding',
+      'aggressive distress',
+      'shutting down',
+      'after-school crash',
+    ],
+  },
+  {
+    key: 'timing',
+    question: 'When does it happen most?',
+    options: [
+      'morning before school',
+      'school drop-off',
+      'classroom entry',
+      'transitions during school',
+      'pickup/after school',
+      'bedtime before school',
+    ],
+  },
+  {
+    key: 'driver',
+    question: 'What might be driving it?',
+    options: [
+      'sensory overload',
+      'separation anxiety',
+      'change in routine',
+      'social pressure',
+      'demand/task avoidance',
+      'tiredness/hunger/pain',
+      'unknown',
+    ],
+  },
+  {
+    key: 'support',
+    question: 'What support is already in place?',
+    options: [
+      'none yet',
+      'teacher knows',
+      'learning support plan',
+      'reduced hours',
+      'calm space',
+      'visual schedule',
+      'not sure',
+    ],
+  },
+]
+
 const flows = {
   sensory: {
     title: 'Sensory overload / meltdown',
@@ -191,6 +244,65 @@ const flows = {
       },
     ],
   },
+  schoolTransition: {
+    title: 'School or transition struggle',
+    steps: schoolTransitionFlow,
+    resultHeading: 'Start with a calmer transition plan.',
+    script:
+      'Hi, we’re noticing school transitions are becoming very hard for him. Could we work together on a simple support plan with a calm entry routine, discreet breaks, and a way to reduce overload before it becomes too much?',
+    resultSections: [
+      {
+        title: 'Immediate steps for today',
+        items: [
+          'Reduce pressure and avoid long explanations during distress.',
+          'Use short, predictable language, such as first shoes, then car.',
+          'Offer a calm transition object, visual schedule, or first/then plan.',
+          'Choose the smallest next step and give time for the child to move toward it.',
+        ],
+      },
+      {
+        title: 'What to avoid',
+        items: [
+          'Avoid arguing, bargaining, or asking lots of why questions in the moment.',
+          'Avoid rushing with surprise changes unless safety requires it.',
+          'Avoid turning the transition into a lesson while the child is overwhelmed.',
+        ],
+      },
+      {
+        title: 'Things to check',
+        items: [
+          'Check sleep, food, toileting, pain, clothing comfort, and morning sensory load.',
+          'Look for patterns around certain days, people, rooms, noise, or timetable changes.',
+          'Track patterns: day, time, trigger, sleep, food, and what helped.',
+        ],
+      },
+      {
+        title: 'School support ideas',
+        items: [
+          'Ask for a calm entry routine with one predictable adult and fewer words.',
+          'Use a visual schedule, first/then card, or quiet arrival job.',
+          'Plan discreet breaks before overload builds, not only after distress starts.',
+          'Consider a reduced-demand start to the day while the routine settles.',
+        ],
+      },
+      {
+        title: 'A simple message/script to send to school',
+        items: [
+          'Use the message above as a starting point and adjust names or details as needed.',
+          'Ask for one or two practical changes first so the plan is easy to try.',
+          'Share what helped at home and ask what staff are noticing at school.',
+        ],
+      },
+      {
+        title: 'When to seek extra help',
+        items: [
+          'Seek extra help if distress is escalating, safety is hard to manage, or school attendance is becoming very difficult.',
+          'Ask school support staff or a trusted professional for help building a shared plan.',
+          'Get urgent help if anyone may be hurt or the child cannot be kept safe.',
+        ],
+      },
+    ],
+  },
 }
 
 function App() {
@@ -224,6 +336,14 @@ function App() {
 
     if (situation === 'Public / private body behaviour') {
       setActiveFlowKey('bodyBehaviour')
+      setCurrentView('flow')
+      setCurrentStep(0)
+      setAnswers({})
+      return
+    }
+
+    if (situation === 'School or transition struggle') {
+      setActiveFlowKey('schoolTransition')
       setCurrentView('flow')
       setCurrentStep(0)
       setAnswers({})
