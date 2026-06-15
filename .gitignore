@@ -3,3 +3,5 @@ dist
 .npm-cache
 .env.local
 .env.*.local
+
+.vercel
