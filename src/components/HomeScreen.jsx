@@ -1,4 +1,5 @@
 import HelperIllustration from './HelperIllustration.jsx'
+import { furtherReading } from '../data/furtherReading.js'
 
 const helperCards = [
   ['communication', 'Communication Support'],
@@ -10,6 +11,8 @@ const helperCards = [
   ['help', 'Asking for Help'],
   ['caregiver', 'Caregiver Support'],
 ]
+
+const featuredReading = furtherReading.slice(0, 4)
 
 function HomeScreen({
   selectedSituation,
@@ -71,6 +74,27 @@ function HomeScreen({
             </article>
           ))}
         </div>
+      </section>
+
+      <section
+        className="further-reading-section"
+        aria-labelledby="further-reading-title"
+      >
+        <h2 id="further-reading-title">Further reading</h2>
+        <div className="reading-list">
+          {featuredReading.map((item) => (
+            <article className="reading-card" key={item.id}>
+              <p className="reading-category">{item.category}</p>
+              <h3>{item.title}</h3>
+              <p className="reading-author">{item.author}</p>
+              <p>{item.short_original_summary}</p>
+            </article>
+          ))}
+        </div>
+        <p className="privacy-note">
+          Reading suggestions are optional background resources and should be
+          reviewed periodically.
+        </p>
       </section>
     </div>
   )
