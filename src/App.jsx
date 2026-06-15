@@ -139,6 +139,53 @@ const schoolTransitionFlow = [
   },
 ]
 
+const communicationFlow = [
+  {
+    key: 'current',
+    question: 'What is happening right now?',
+    options: [
+      'not answering',
+      'repeating words/sounds',
+      'crying/frustrated',
+      'pointing/pulling adult',
+      'saying no to everything',
+      'seems confused',
+    ],
+  },
+  {
+    key: 'words',
+    question: 'Can the child use words right now?',
+    options: ['yes', 'some words', 'no words right now', 'not sure'],
+  },
+  {
+    key: 'need',
+    question: 'What might they need?',
+    options: [
+      'help',
+      'break',
+      'food/drink',
+      'toilet',
+      'comfort',
+      'more time',
+      'different activity',
+      'unknown',
+    ],
+  },
+  {
+    key: 'harder',
+    question: 'What makes communication harder right now?',
+    options: [
+      'too many words',
+      'too many choices',
+      'noise/overload',
+      'pressure to answer',
+      'change in routine',
+      'tiredness/hunger/pain',
+      'unknown',
+    ],
+  },
+]
+
 const flows = {
   sensory: {
     title: 'Sensory overload / meltdown',
@@ -303,6 +350,67 @@ const flows = {
       },
     ],
   },
+  communication: {
+    title: 'Communication difficulty',
+    steps: communicationFlow,
+    resultHeading: 'Support communication without pressure.',
+    scripts: [
+      'You do not need to talk. Show me or point.',
+      'First calm, then we solve.',
+      'Do you want help or a break?',
+    ],
+    resultSections: [
+      {
+        title: 'Immediate communication support',
+        items: [
+          'Use fewer words and keep your voice calm.',
+          'Pause and wait so the child has time to process.',
+          'Offer two simple choices, or one clear next step.',
+          'Accept pointing, gestures, objects, or showing instead of speech.',
+        ],
+      },
+      {
+        title: 'What to say',
+        items: [
+          'Use the scripts above in a steady, predictable way.',
+          'Name what you can see without asking for an explanation.',
+          'Try short choices such as help or break, drink or toilet, here or quiet space.',
+        ],
+      },
+      {
+        title: 'What to avoid',
+        items: [
+          'Do not demand eye contact or force speech during distress.',
+          'Avoid repeating the same question quickly.',
+          'Avoid too many choices, long explanations, or pressure to answer now.',
+        ],
+      },
+      {
+        title: 'Visual/support options',
+        items: [
+          'Use visuals, pointing, gestures, or objects to help the child communicate.',
+          'Offer a picture card, first/then card, yes/no choice, or familiar item.',
+          'Let the child show you what they need if words are not available.',
+        ],
+      },
+      {
+        title: 'Body checks',
+        items: [
+          'Check tiredness, hunger, thirst, toileting, pain, heat, cold, and sensory overload.',
+          'Look for signs that the child needs a break, comfort, movement, or a quieter space.',
+          'Notice whether communication improves after the body need is met.',
+        ],
+      },
+      {
+        title: 'When to seek extra help',
+        items: [
+          'Seek extra help if communication changes suddenly, distress is increasing, or daily needs are hard to understand.',
+          'Ask a trusted professional or school support person for practical communication supports.',
+          'Get urgent help if anyone may be hurt or the child cannot be kept safe.',
+        ],
+      },
+    ],
+  },
 }
 
 function App() {
@@ -316,6 +424,8 @@ function App() {
   const hasAlert = activeFlow?.alertAnswer
     ? Object.values(answers).includes(activeFlow.alertAnswer)
     : false
+  const activeScripts =
+    activeFlow?.scripts ?? (activeFlow?.script ? [activeFlow.script] : [])
   const selectedSituation = answers.selectedSituation
 
   function returnHome() {
@@ -344,6 +454,14 @@ function App() {
 
     if (situation === 'School or transition struggle') {
       setActiveFlowKey('schoolTransition')
+      setCurrentView('flow')
+      setCurrentStep(0)
+      setAnswers({})
+      return
+    }
+
+    if (situation === 'Communication difficulty') {
+      setActiveFlowKey('communication')
       setCurrentView('flow')
       setCurrentStep(0)
       setAnswers({})
@@ -444,8 +562,14 @@ function App() {
 
             {hasAlert && <p className="urgent-note">{activeFlow.alertText}</p>}
 
-            {activeFlow.script && (
-              <blockquote className="script-card">{activeFlow.script}</blockquote>
+            {activeScripts.length > 0 && (
+              <div className="script-list">
+                {activeScripts.map((script) => (
+                  <blockquote className="script-card" key={script}>
+                    {script}
+                  </blockquote>
+                ))}
+              </div>
             )}
 
             <div className="answer-summary" aria-label="Your answers">
