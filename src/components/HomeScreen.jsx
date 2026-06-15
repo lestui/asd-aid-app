@@ -18,6 +18,8 @@ function HomeScreen({
   selectedSituation,
   situations,
   onChooseSituation,
+  onOpenEvidenceSupports,
+  onOpenFurtherReading,
   onOpenProfile,
   onOpenSavedStrategies,
 }) {
@@ -58,6 +60,20 @@ function HomeScreen({
         >
           Saved strategies
         </button>
+        <button
+          className="secondary-action"
+          type="button"
+          onClick={onOpenEvidenceSupports}
+        >
+          Evidence-informed supports
+        </button>
+        <button
+          className="secondary-action"
+          type="button"
+          onClick={onOpenFurtherReading}
+        >
+          Further reading
+        </button>
       </div>
 
       <p className="privacy-note">
@@ -91,6 +107,13 @@ function HomeScreen({
             </article>
           ))}
         </div>
+        <button
+          className="primary-action"
+          type="button"
+          onClick={onOpenFurtherReading}
+        >
+          View all further reading
+        </button>
         <p className="privacy-note">
           Reading suggestions are optional background resources and should be
           reviewed periodically.

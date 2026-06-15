@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import ChildProfileScreen from './components/ChildProfileScreen.jsx'
+import EvidenceSupportScreen from './components/EvidenceSupportScreen.jsx'
 import FlowScreen from './components/FlowScreen.jsx'
+import FurtherReadingScreen from './components/FurtherReadingScreen.jsx'
 import HomeScreen from './components/HomeScreen.jsx'
 import ResultScreen from './components/ResultScreen.jsx'
 import SavedStrategiesScreen from './components/SavedStrategiesScreen.jsx'
@@ -84,6 +86,14 @@ function App() {
   function openSavedStrategies() {
     setCurrentView('savedStrategies')
     setStrategySavedMessage('')
+  }
+
+  function openEvidenceSupports() {
+    setCurrentView('evidenceSupports')
+  }
+
+  function openFurtherReading() {
+    setCurrentView('furtherReading')
   }
 
   function chooseSituation(situation) {
@@ -186,6 +196,8 @@ function App() {
             selectedSituation={selectedSituation}
             situations={situations}
             onChooseSituation={chooseSituation}
+            onOpenEvidenceSupports={openEvidenceSupports}
+            onOpenFurtherReading={openFurtherReading}
             onOpenProfile={openProfile}
             onOpenSavedStrategies={openSavedStrategies}
           />
@@ -230,11 +242,19 @@ function App() {
             onDelete={deleteSavedStrategy}
           />
         )}
+
+        {currentView === 'evidenceSupports' && (
+          <EvidenceSupportScreen onBack={returnHome} />
+        )}
+
+        {currentView === 'furtherReading' && (
+          <FurtherReadingScreen onBack={returnHome} />
+        )}
       </section>
 
       <p className="disclaimer">
-        This app provides general support strategies only. It does not diagnose
-        or replace medical, therapy, or emergency advice.
+        This app provides general educational support information. It is not a
+        diagnostic tool and does not replace professional advice.
       </p>
     </main>
   )
