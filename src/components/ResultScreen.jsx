@@ -1,4 +1,12 @@
-function ResultScreen({ answers, flow, hasAlert, scripts, onBack }) {
+function ResultScreen({
+  answers,
+  flow,
+  hasAlert,
+  scripts,
+  savedMessage,
+  onBack,
+  onSaveStrategy,
+}) {
   return (
     <div className="decision-panel result-panel">
       <button className="back-button" type="button" onClick={onBack}>
@@ -40,6 +48,16 @@ function ResultScreen({ answers, flow, hasAlert, scripts, onBack }) {
           </section>
         ))}
       </div>
+
+      <button className="primary-action" type="button" onClick={onSaveStrategy}>
+        Save this strategy
+      </button>
+
+      {savedMessage && (
+        <p className="selection-note" aria-live="polite">
+          {savedMessage}
+        </p>
+      )}
     </div>
   )
 }

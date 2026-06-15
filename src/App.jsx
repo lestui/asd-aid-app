@@ -1,15 +1,54 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import ChildProfileScreen from './components/ChildProfileScreen.jsx'
 import FlowScreen from './components/FlowScreen.jsx'
 import HomeScreen from './components/HomeScreen.jsx'
 import ResultScreen from './components/ResultScreen.jsx'
+import SavedStrategiesScreen from './components/SavedStrategiesScreen.jsx'
 import { flows, situations } from './data/flows.js'
 import './App.css'
+
+const PROFILE_STORAGE_KEY = 'asd-aid-child-profile'
+const STRATEGIES_STORAGE_KEY = 'asd-aid-saved-strategies'
+
+const emptyProfile = {
+  nickname: '',
+  age: '',
+  triggers: '',
+  calmingTools: '',
+  communicationPreferences: '',
+  schoolNotes: '',
+}
+
+function loadStoredValue(key, fallback) {
+  try {
+    const storedValue = window.localStorage.getItem(key)
+    return storedValue ? JSON.parse(storedValue) : fallback
+  } catch {
+    return fallback
+  }
+}
+
+function sortNewestFirst(strategies) {
+  if (!Array.isArray(strategies)) {
+    return []
+  }
+
+  return [...strategies].sort(
+    (firstStrategy, secondStrategy) =>
+      new Date(secondStrategy.savedAt).getTime() -
+      new Date(firstStrategy.savedAt).getTime(),
+  )
+}
 
 function App() {
   const [currentView, setCurrentView] = useState('home')
   const [currentStep, setCurrentStep] = useState(0)
   const [answers, setAnswers] = useState({})
   const [activeFlowKey, setActiveFlowKey] = useState('')
+  const [profile, setProfile] = useState(emptyProfile)
+  const [savedStrategies, setSavedStrategies] = useState([])
+  const [profileSavedMessage, setProfileSavedMessage] = useState('')
+  const [strategySavedMessage, setStrategySavedMessage] = useState('')
 
   const activeFlow = flows[activeFlowKey]
   const activeStep = activeFlow?.steps[currentStep]
@@ -20,11 +59,31 @@ function App() {
     activeFlow?.scripts ?? (activeFlow?.script ? [activeFlow.script] : [])
   const selectedSituation = answers.selectedSituation
 
+  useEffect(() => {
+    setProfile({
+      ...emptyProfile,
+      ...loadStoredValue(PROFILE_STORAGE_KEY, emptyProfile),
+    })
+    setSavedStrategies(sortNewestFirst(loadStoredValue(STRATEGIES_STORAGE_KEY, [])))
+  }, [])
+
   function returnHome() {
     setCurrentView('home')
     setCurrentStep(0)
     setAnswers({})
     setActiveFlowKey('')
+    setProfileSavedMessage('')
+    setStrategySavedMessage('')
+  }
+
+  function openProfile() {
+    setCurrentView('profile')
+    setProfileSavedMessage('')
+  }
+
+  function openSavedStrategies() {
+    setCurrentView('savedStrategies')
+    setStrategySavedMessage('')
   }
 
   function chooseSituation(situation) {
@@ -52,6 +111,59 @@ function App() {
     setCurrentStep((step) => step + 1)
   }
 
+  function updateProfileField(field, value) {
+    setProfile((currentProfile) => ({
+      ...currentProfile,
+      [field]: value,
+    }))
+  }
+
+  function saveProfile(event) {
+    event.preventDefault()
+    window.localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile))
+    setProfileSavedMessage('Profile saved on this device.')
+  }
+
+  function saveCurrentStrategy() {
+    if (!activeFlow) {
+      return
+    }
+
+    const strategy = {
+      id: crypto.randomUUID(),
+      flowTitle: activeFlow.title,
+      savedAt: new Date().toISOString(),
+      answers: activeFlow.steps.map((step) => ({
+        question: step.question,
+        answer: answers[step.key],
+      })),
+      resultSections: activeFlow.resultSections,
+    }
+
+    setSavedStrategies((currentStrategies) => {
+      const updatedStrategies = [strategy, ...currentStrategies]
+      window.localStorage.setItem(
+        STRATEGIES_STORAGE_KEY,
+        JSON.stringify(updatedStrategies),
+      )
+      return updatedStrategies
+    })
+    setStrategySavedMessage('Strategy saved on this device.')
+  }
+
+  function deleteSavedStrategy(strategyId) {
+    setSavedStrategies((currentStrategies) => {
+      const updatedStrategies = currentStrategies.filter(
+        (strategy) => strategy.id !== strategyId,
+      )
+      window.localStorage.setItem(
+        STRATEGIES_STORAGE_KEY,
+        JSON.stringify(updatedStrategies),
+      )
+      return updatedStrategies
+    })
+  }
+
   return (
     <main className="app-shell">
       <section className="support-card" aria-labelledby="app-title">
@@ -68,6 +180,8 @@ function App() {
             selectedSituation={selectedSituation}
             situations={situations}
             onChooseSituation={chooseSituation}
+            onOpenProfile={openProfile}
+            onOpenSavedStrategies={openSavedStrategies}
           />
         )}
 
@@ -87,7 +201,27 @@ function App() {
             flow={activeFlow}
             hasAlert={hasAlert}
             scripts={activeScripts}
+            savedMessage={strategySavedMessage}
             onBack={returnHome}
+            onSaveStrategy={saveCurrentStrategy}
+          />
+        )}
+
+        {currentView === 'profile' && (
+          <ChildProfileScreen
+            profile={profile}
+            savedMessage={profileSavedMessage}
+            onBack={returnHome}
+            onChange={updateProfileField}
+            onSave={saveProfile}
+          />
+        )}
+
+        {currentView === 'savedStrategies' && (
+          <SavedStrategiesScreen
+            savedStrategies={savedStrategies}
+            onBack={returnHome}
+            onDelete={deleteSavedStrategy}
           />
         )}
       </section>
