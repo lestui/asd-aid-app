@@ -1,16 +1,6 @@
 import HelperIllustration from './HelperIllustration.jsx'
 import { furtherReading } from '../data/furtherReading.js'
-
-const helperCards = [
-  ['communication', 'Communication Support', 'Fewer words, more ways to show needs.'],
-  ['sensory', 'Sensory Overload', 'Reduce input and protect safe recovery.'],
-  ['calm', 'Calm Strategy', 'Small regulation steps for hard moments.'],
-  ['routine', 'Routine Change', 'Preview changes with clear visual supports.'],
-  ['meltdown', 'Meltdown Support', 'Safety, space, and no-shame recovery.'],
-  ['shutdown', 'Shutdown Support', 'Low-demand support when capacity drops.'],
-  ['help', 'Asking for Help', 'Cards, gestures, and practical scripts.'],
-  ['caregiver', 'Caregiver Support', 'Keep useful notes and support close.'],
-]
+import { guideAreas } from '../data/guideAreas.js'
 
 const situationHints = {
   'Sensory overload / meltdown': 'Big distress, overwhelm, hard to cope',
@@ -37,6 +27,7 @@ function HomeScreen({
   onOpenBodyRegulation,
   onOpenEvidenceSupports,
   onOpenFurtherReading,
+  onOpenGuideArea,
   onOpenProfile,
   onOpenSavedStrategies,
   onOpenToiletingSupport,
@@ -118,12 +109,20 @@ function HomeScreen({
       <section className="helper-card-section" aria-labelledby="helper-card-title">
         <h2 id="helper-card-title">Guide areas</h2>
         <div className="helper-card-grid">
-          {helperCards.map(([type, title, blurb]) => (
-            <article className="helper-card" key={type}>
-              <HelperIllustration type={type} />
-              <h3>{title}</h3>
-              <p>{blurb}</p>
-            </article>
+          {guideAreas.map((guideArea) => (
+            <button
+              aria-label={`Open ${guideArea.title} guide`}
+              className="helper-card helper-card-button"
+              key={guideArea.id}
+              type="button"
+              onClick={() => onOpenGuideArea(guideArea.id)}
+            >
+              <HelperIllustration type={guideArea.id} />
+              <span>
+                <strong>{guideArea.title}</strong>
+                <small>{guideArea.blurb}</small>
+              </span>
+            </button>
           ))}
         </div>
       </section>

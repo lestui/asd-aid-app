@@ -4,6 +4,7 @@ import ChildProfileScreen from './components/ChildProfileScreen.jsx'
 import EvidenceSupportScreen from './components/EvidenceSupportScreen.jsx'
 import FlowScreen from './components/FlowScreen.jsx'
 import FurtherReadingScreen from './components/FurtherReadingScreen.jsx'
+import GuideAreaScreen from './components/GuideAreaScreen.jsx'
 import HomeScreen from './components/HomeScreen.jsx'
 import ResultScreen from './components/ResultScreen.jsx'
 import SavedStrategiesScreen from './components/SavedStrategiesScreen.jsx'
@@ -53,6 +54,7 @@ function App() {
   const [savedStrategies, setSavedStrategies] = useState([])
   const [profileSavedMessage, setProfileSavedMessage] = useState('')
   const [strategySavedMessage, setStrategySavedMessage] = useState('')
+  const [activeGuideAreaId, setActiveGuideAreaId] = useState('')
 
   const activeFlow = flows[activeFlowKey]
   const activeStep = activeFlow?.steps[currentStep]
@@ -76,6 +78,7 @@ function App() {
     setCurrentStep(0)
     setAnswers({})
     setActiveFlowKey('')
+    setActiveGuideAreaId('')
     setProfileSavedMessage('')
     setStrategySavedMessage('')
   }
@@ -104,6 +107,11 @@ function App() {
 
   function openFurtherReading() {
     setCurrentView('furtherReading')
+  }
+
+  function openGuideArea(guideAreaId) {
+    setActiveGuideAreaId(guideAreaId)
+    setCurrentView('guideArea')
   }
 
   function chooseSituation(situation) {
@@ -211,6 +219,7 @@ function App() {
             onOpenBodyRegulation={openBodyRegulation}
             onOpenEvidenceSupports={openEvidenceSupports}
             onOpenFurtherReading={openFurtherReading}
+            onOpenGuideArea={openGuideArea}
             onOpenProfile={openProfile}
             onOpenSavedStrategies={openSavedStrategies}
             onOpenToiletingSupport={openToiletingSupport}
@@ -271,6 +280,13 @@ function App() {
 
         {currentView === 'furtherReading' && (
           <FurtherReadingScreen onBack={returnHome} />
+        )}
+
+        {currentView === 'guideArea' && (
+          <GuideAreaScreen
+            guideAreaId={activeGuideAreaId}
+            onBack={returnHome}
+          />
         )}
       </section>
 
