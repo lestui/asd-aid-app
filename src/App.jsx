@@ -17,11 +17,46 @@ const STRATEGIES_STORAGE_KEY = 'asd-aid-saved-strategies'
 
 const emptyProfile = {
   nickname: '',
-  age: '',
-  triggers: '',
-  calmingTools: '',
-  communicationPreferences: '',
-  schoolNotes: '',
+  ageStage: '',
+  communicationStyle: [],
+  sensoryTriggers: [],
+  calmingSupports: [],
+  difficultRoutines: [],
+  toiletingConcerns: [],
+  schoolChallenges: [],
+  safetyConcerns: [],
+  caregiverNotes: '',
+}
+
+function normalizeProfile(storedProfile) {
+  const mergedProfile = {
+    ...emptyProfile,
+    ...(storedProfile && typeof storedProfile === 'object' ? storedProfile : {}),
+  }
+
+  Object.keys(emptyProfile).forEach((key) => {
+    if (Array.isArray(emptyProfile[key]) && !Array.isArray(mergedProfile[key])) {
+      mergedProfile[key] = []
+    }
+  })
+
+  if (!mergedProfile.ageStage && storedProfile?.age) {
+    mergedProfile.ageStage = storedProfile.age
+  }
+
+  if (!mergedProfile.caregiverNotes) {
+    mergedProfile.caregiverNotes = [
+      storedProfile?.triggers && `Triggers: ${storedProfile.triggers}`,
+      storedProfile?.calmingTools && `Calming tools: ${storedProfile.calmingTools}`,
+      storedProfile?.communicationPreferences &&
+        `Communication: ${storedProfile.communicationPreferences}`,
+      storedProfile?.schoolNotes && `School: ${storedProfile.schoolNotes}`,
+    ]
+      .filter(Boolean)
+      .join('\n')
+  }
+
+  return mergedProfile
 }
 
 function loadStoredValue(key, fallback) {
@@ -66,10 +101,7 @@ function App() {
   const selectedSituation = answers.selectedSituation
 
   useEffect(() => {
-    setProfile({
-      ...emptyProfile,
-      ...loadStoredValue(PROFILE_STORAGE_KEY, emptyProfile),
-    })
+    setProfile(normalizeProfile(loadStoredValue(PROFILE_STORAGE_KEY, emptyProfile)))
     setSavedStrategies(sortNewestFirst(loadStoredValue(STRATEGIES_STORAGE_KEY, [])))
   }, [])
 
@@ -253,7 +285,11 @@ function App() {
             profile={profile}
             savedMessage={profileSavedMessage}
             onBack={returnHome}
+            onBrowseBodyRegulation={openBodyRegulation}
+            onBrowseEvidenceSupports={openEvidenceSupports}
+            onBrowseToileting={openToiletingSupport}
             onChange={updateProfileField}
+            onOpenGuideArea={openGuideArea}
             onSave={saveProfile}
           />
         )}

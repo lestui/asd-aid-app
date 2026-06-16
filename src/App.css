@@ -410,7 +410,46 @@ h2 {
   font-weight: 650;
 }
 
+.profile-checkbox-group {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.profile-checkbox-group legend {
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.checkbox-grid {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.checkbox-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  padding: 0.7rem 0.75rem;
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-control);
+  background: var(--color-card);
+  color: var(--color-text);
+  font-size: 0.92rem;
+  line-height: 1.35;
+}
+
+.checkbox-option input {
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.1rem;
+  accent-color: var(--color-primary);
+}
+
 .profile-field input,
+.profile-field select,
 .profile-field textarea,
 .filter-field input,
 .filter-field select {
@@ -429,6 +468,7 @@ h2 {
 }
 
 .profile-field input:focus,
+.profile-field select:focus,
 .profile-field textarea:focus,
 .filter-field input:focus,
 .filter-field select:focus {
@@ -849,6 +889,68 @@ h2 {
   line-height: 1.5;
 }
 
+.recommendations-panel,
+.recommendation-section {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.recommendation-section h3 {
+  margin: 0;
+  color: var(--color-primary-deep);
+  font-size: 1rem;
+}
+
+.recommendation-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.recommendation-card {
+  display: grid;
+  gap: 0.65rem;
+  padding: 1rem;
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-control);
+  background: var(--color-card);
+  box-shadow: var(--shadow-card);
+}
+
+.recommendation-card h3 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 1.02rem;
+}
+
+.recommendation-card p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.reason-list {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding-left: 1.1rem;
+  color: var(--color-text-muted);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.recommendation-actions {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.compact-action {
+  min-height: auto;
+  justify-content: center;
+  padding: 0.7rem 0.9rem;
+  text-align: center;
+}
+
 @media (min-width: 44rem) {
   .app-shell {
     padding: 1.6rem 1rem 2.5rem;
@@ -875,6 +977,12 @@ h2 {
   }
 
   .home-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .checkbox-grid,
+  .recommendation-list,
+  .recommendation-actions {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
