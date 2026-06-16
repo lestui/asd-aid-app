@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import BodyRegulationScreen from './components/BodyRegulationScreen.jsx'
 import ChildProfileScreen from './components/ChildProfileScreen.jsx'
 import EvidenceSupportScreen from './components/EvidenceSupportScreen.jsx'
 import FlowScreen from './components/FlowScreen.jsx'
@@ -90,6 +91,10 @@ function App() {
 
   function openEvidenceSupports() {
     setCurrentView('evidenceSupports')
+  }
+
+  function openBodyRegulation() {
+    setCurrentView('bodyRegulation')
   }
 
   function openFurtherReading() {
@@ -196,6 +201,7 @@ function App() {
             selectedSituation={selectedSituation}
             situations={situations}
             onChooseSituation={chooseSituation}
+            onOpenBodyRegulation={openBodyRegulation}
             onOpenEvidenceSupports={openEvidenceSupports}
             onOpenFurtherReading={openFurtherReading}
             onOpenProfile={openProfile}
@@ -245,6 +251,10 @@ function App() {
 
         {currentView === 'evidenceSupports' && (
           <EvidenceSupportScreen onBack={returnHome} />
+        )}
+
+        {currentView === 'bodyRegulation' && (
+          <BodyRegulationScreen onBack={returnHome} />
         )}
 
         {currentView === 'furtherReading' && (

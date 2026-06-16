@@ -18,6 +18,7 @@ function HomeScreen({
   selectedSituation,
   situations,
   onChooseSituation,
+  onOpenBodyRegulation,
   onOpenEvidenceSupports,
   onOpenFurtherReading,
   onOpenProfile,
@@ -66,6 +67,13 @@ function HomeScreen({
           onClick={onOpenEvidenceSupports}
         >
           Evidence-informed supports
+        </button>
+        <button
+          className="secondary-action"
+          type="button"
+          onClick={onOpenBodyRegulation}
+        >
+          Body regulation & boundaries
         </button>
         <button
           className="secondary-action"

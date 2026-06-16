@@ -93,33 +93,40 @@ function EvidenceSupportScreen({ onBack }) {
         Showing {filteredSupports.length} of {evidenceBasedSupport.length}
       </p>
 
-      <div className="support-card-list">
-        {filteredSupports.map((item) => (
-          <article className="support-db-card" key={item.id}>
-            <div className="support-card-header">
-              <div>
-                <p className="reading-category">{item.category}</p>
-                <h3>{item.title}</h3>
+      {filteredSupports.length === 0 ? (
+        <p className="empty-note">
+          No support entries match those filters. Try a different search term or
+          category.
+        </p>
+      ) : (
+        <div className="support-card-list">
+          {filteredSupports.map((item) => (
+            <article className="support-db-card" key={item.id}>
+              <div className="support-card-header">
+                <div>
+                  <p className="reading-category">{item.category}</p>
+                  <h3>{item.title}</h3>
+                </div>
+                <span className="evidence-pill">{item.evidence_level}</span>
               </div>
-              <span className="evidence-pill">{item.evidence_level}</span>
-            </div>
 
-            <p>
-              <strong>Situation:</strong> {item.situation}
-            </p>
-            <p>
-              <strong>Caregiver goal:</strong> {item.caregiver_goal}
-            </p>
+              <p>
+                <strong>Situation:</strong> {item.situation}
+              </p>
+              <p>
+                <strong>Caregiver goal:</strong> {item.caregiver_goal}
+              </p>
 
-            <DetailList heading="Try first" items={item.try_first} />
-            <DetailList heading="Avoid" items={item.avoid} />
-            <DetailList
-              heading="When to seek help"
-              items={item.when_to_seek_help}
-            />
-          </article>
-        ))}
-      </div>
+              <DetailList heading="Try first" items={item.try_first} />
+              <DetailList heading="Avoid" items={item.avoid} />
+              <DetailList
+                heading="When to seek help"
+                items={item.when_to_seek_help}
+              />
+            </article>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
