@@ -23,6 +23,7 @@ function HomeScreen({
   onOpenFurtherReading,
   onOpenProfile,
   onOpenSavedStrategies,
+  onOpenToiletingSupport,
 }) {
   return (
     <div className="decision-panel">
@@ -74,6 +75,13 @@ function HomeScreen({
           onClick={onOpenBodyRegulation}
         >
           Body regulation & boundaries
+        </button>
+        <button
+          className="secondary-action"
+          type="button"
+          onClick={onOpenToiletingSupport}
+        >
+          Toileting, hygiene & body routines
         </button>
         <button
           className="secondary-action"

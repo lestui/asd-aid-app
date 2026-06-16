@@ -7,6 +7,7 @@ import FurtherReadingScreen from './components/FurtherReadingScreen.jsx'
 import HomeScreen from './components/HomeScreen.jsx'
 import ResultScreen from './components/ResultScreen.jsx'
 import SavedStrategiesScreen from './components/SavedStrategiesScreen.jsx'
+import ToiletingSupportScreen from './components/ToiletingSupportScreen.jsx'
 import { flows, situations } from './data/flows.js'
 import './App.css'
 
@@ -95,6 +96,10 @@ function App() {
 
   function openBodyRegulation() {
     setCurrentView('bodyRegulation')
+  }
+
+  function openToiletingSupport() {
+    setCurrentView('toiletingSupport')
   }
 
   function openFurtherReading() {
@@ -206,6 +211,7 @@ function App() {
             onOpenFurtherReading={openFurtherReading}
             onOpenProfile={openProfile}
             onOpenSavedStrategies={openSavedStrategies}
+            onOpenToiletingSupport={openToiletingSupport}
           />
         )}
 
@@ -255,6 +261,10 @@ function App() {
 
         {currentView === 'bodyRegulation' && (
           <BodyRegulationScreen onBack={returnHome} />
+        )}
+
+        {currentView === 'toiletingSupport' && (
+          <ToiletingSupportScreen onBack={returnHome} />
         )}
 
         {currentView === 'furtherReading' && (
