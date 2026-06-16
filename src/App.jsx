@@ -189,16 +189,18 @@ function App() {
       <section className="support-card" aria-labelledby="app-title">
         <header className={currentView === 'home' ? 'hero' : 'hero compact'}>
           <img
-            className="brand-logo"
-            src="/asd-helper-guide-logo.svg"
+            className="brand-mark"
+            src="/asd-helper-guide-icon.svg"
             alt=""
             aria-hidden="true"
           />
-          <p className="eyebrow">Support guide</p>
-          <h1 id="app-title">ASD Helper Guide</h1>
-          <p className="subtitle">
-            A calm decision-support tool for daily autism and ADHD challenges.
-          </p>
+          <div className="brand-copy">
+            <p className="eyebrow">Sunflower support</p>
+            <h1 id="app-title">ASD Helper Guide</h1>
+            <p className="subtitle">
+              Calm decision support for everyday autism and ADHD challenges.
+            </p>
+          </div>
         </header>
 
         {currentView === 'home' && (

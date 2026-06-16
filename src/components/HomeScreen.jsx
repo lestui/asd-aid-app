@@ -2,14 +2,30 @@ import HelperIllustration from './HelperIllustration.jsx'
 import { furtherReading } from '../data/furtherReading.js'
 
 const helperCards = [
-  ['communication', 'Communication Support'],
-  ['sensory', 'Sensory Overload'],
-  ['calm', 'Calm Strategy'],
-  ['routine', 'Routine Change'],
-  ['meltdown', 'Meltdown Support'],
-  ['shutdown', 'Shutdown Support'],
-  ['help', 'Asking for Help'],
-  ['caregiver', 'Caregiver Support'],
+  ['communication', 'Communication Support', 'Fewer words, more ways to show needs.'],
+  ['sensory', 'Sensory Overload', 'Reduce input and protect safe recovery.'],
+  ['calm', 'Calm Strategy', 'Small regulation steps for hard moments.'],
+  ['routine', 'Routine Change', 'Preview changes with clear visual supports.'],
+  ['meltdown', 'Meltdown Support', 'Safety, space, and no-shame recovery.'],
+  ['shutdown', 'Shutdown Support', 'Low-demand support when capacity drops.'],
+  ['help', 'Asking for Help', 'Cards, gestures, and practical scripts.'],
+  ['caregiver', 'Caregiver Support', 'Keep useful notes and support close.'],
+]
+
+const situationHints = {
+  'Sensory overload / meltdown': 'Big distress, overwhelm, hard to cope',
+  'Communication difficulty': 'Words are hard, not answering, frustrated',
+  'School or transition struggle': 'Refusing, clinging, after-school crash',
+  'Public / private body behaviour': 'Calm, private, practical body-care support',
+}
+
+const quickActions = [
+  ['Child profile', 'Keep child-specific details handy.', 'profile'],
+  ['Saved strategies', 'Return to support plans that helped.', 'saved'],
+  ['Evidence-informed supports', 'Browse searchable support cards.', 'evidence'],
+  ['Body regulation & boundaries', 'Body checks, privacy, and safe scripts.', 'body'],
+  ['Toileting, hygiene & body routines', 'Practical routines across ages and settings.', 'toileting'],
+  ['Further reading', 'Optional books, guidelines, and references.', 'reading'],
 ]
 
 const featuredReading = furtherReading.slice(0, 4)
@@ -25,9 +41,24 @@ function HomeScreen({
   onOpenSavedStrategies,
   onOpenToiletingSupport,
 }) {
+  const actionHandlers = {
+    profile: onOpenProfile,
+    saved: onOpenSavedStrategies,
+    evidence: onOpenEvidenceSupports,
+    body: onOpenBodyRegulation,
+    toileting: onOpenToiletingSupport,
+    reading: onOpenFurtherReading,
+  }
+
   return (
     <div className="decision-panel">
-      <h2>What is happening right now?</h2>
+      <div className="screen-intro">
+        <h2>What is happening right now?</h2>
+        <p>
+          Pick what fits this moment. The guide will walk through calm questions
+          and practical next steps.
+        </p>
+      </div>
       <div className="button-list" role="list">
         {situations.map((situation) => (
           <button
@@ -40,7 +71,16 @@ function HomeScreen({
             type="button"
             onClick={() => onChooseSituation(situation)}
           >
-            {situation.label}
+            <span className="decision-icon" aria-hidden="true">
+              <span />
+            </span>
+            <span className="decision-copy">
+              <span>{situation.label}</span>
+              <small>{situationHints[situation.label]}</small>
+            </span>
+            <span className="decision-arrow" aria-hidden="true">
+              →
+            </span>
           </button>
         ))}
       </div>
@@ -51,46 +91,25 @@ function HomeScreen({
         </p>
       )}
 
-      <div className="home-actions">
-        <button className="secondary-action" type="button" onClick={onOpenProfile}>
-          Child profile
-        </button>
-        <button
-          className="secondary-action"
-          type="button"
-          onClick={onOpenSavedStrategies}
-        >
-          Saved strategies
-        </button>
-        <button
-          className="secondary-action"
-          type="button"
-          onClick={onOpenEvidenceSupports}
-        >
-          Evidence-informed supports
-        </button>
-        <button
-          className="secondary-action"
-          type="button"
-          onClick={onOpenBodyRegulation}
-        >
-          Body regulation & boundaries
-        </button>
-        <button
-          className="secondary-action"
-          type="button"
-          onClick={onOpenToiletingSupport}
-        >
-          Toileting, hygiene & body routines
-        </button>
-        <button
-          className="secondary-action"
-          type="button"
-          onClick={onOpenFurtherReading}
-        >
-          Further reading
-        </button>
-      </div>
+      <section className="quick-section" aria-labelledby="quick-section-title">
+        <h2 id="quick-section-title">Keep close</h2>
+        <div className="home-actions">
+          {quickActions.map(([title, hint, actionKey]) => (
+            <button
+              className="secondary-action"
+              key={title}
+              type="button"
+              onClick={actionHandlers[actionKey]}
+            >
+              <span className="quick-icon" aria-hidden="true" />
+              <span>
+                <span>{title}</span>
+                <small>{hint}</small>
+              </span>
+            </button>
+          ))}
+        </div>
+      </section>
 
       <p className="privacy-note">
         Saved profiles and strategies stay on this device only.
@@ -99,10 +118,11 @@ function HomeScreen({
       <section className="helper-card-section" aria-labelledby="helper-card-title">
         <h2 id="helper-card-title">Guide areas</h2>
         <div className="helper-card-grid">
-          {helperCards.map(([type, title]) => (
+          {helperCards.map(([type, title, blurb]) => (
             <article className="helper-card" key={type}>
               <HelperIllustration type={type} />
               <h3>{title}</h3>
+              <p>{blurb}</p>
             </article>
           ))}
         </div>

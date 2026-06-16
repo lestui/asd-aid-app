@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  :root{
+    --ink:#243029; --muted:#5f6b62; --bg:#f1efe6; --surface:#ffffff;
+    --green:#2e7a48; --green-deep:#1d5532; --green-pale:#e7f1e9; --green-tint:#f1f7f2; --green-border:#d3e4d7;
+    --gold:#cf930f; --gold-bright:#f6c544; --gold-pale:#fcefce; --gold-border:#f0d79a; --gold-deep:#8a5f0c;
+    --warn:#b85a35; --warn-bg:#fbece2; --warn-border:#ecd0c0;
+    --r-lg:24px; --r-md:16px; --r-sm:12px;
+    --shadow:0 14px 34px rgba(29,85,50,.09); --shadow-sm:0 6px 16px rgba(29,85,50,.07);
+  }
+  @keyframes rise{ from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:none; } }
+  ::-webkit-scrollbar{ width:10px; height:10px; }
+  ::-webkit-scrollbar-thumb{ background:var(--green-border); border-radius:20px; }
+  ::selection{ background:var(--gold-pale); }
+</style>
+</helmet>
+
+<div style="--green: {{ greenVar }}; --gold-bright: {{ goldVar }};">
+<div style="min-height:100vh; font-family:'Hanken Grotesk',system-ui,sans-serif; color:var(--ink); background:radial-gradient(120% 60% at 50% -10%, var(--green-tint), transparent 60%), radial-gradient(80% 40% at 100% 8%, var(--gold-pale), transparent 55%), var(--bg); display:flex; flex-direction:column; align-items:center; padding:22px 16px 40px; gap:14px;">
+
+  <div style="width:min(100%,468px); display:flex; flex-direction:column; gap:14px;">
+
+    <!-- App bar -->
+    <header style="display:flex; align-items:center; gap:13px; padding:4px 4px 0;">
+      <div style="position:relative; flex:none; width:46px; height:46px; border-radius:15px; background:var(--green); box-shadow:var(--shadow-sm); display:grid; place-items:center;">
+        <svg viewBox="0 0 48 48" width="46" height="46" aria-hidden="true">
+          <g transform="translate(24,24)">
+            <g fill="var(--gold-bright)">
+              <ellipse cx="0" cy="-12.5" rx="3.1" ry="7"></ellipse>
+              <ellipse cx="0" cy="-12.5" rx="3.1" ry="7" transform="rotate(36)"></ellipse>
+              <ellipse cx="0" cy="-12.5" rx="3.1" ry="7" transform="rotate(72)"></ellipse>
+              <ellipse cx="0" cy="-12.5" rx="3.1" ry="7" transform="rotate(108)"></ellipse>
+              <ellipse cx="0" cy="-12.5" rx="3.1" ry="7" transform="rotate(144)"></ellipse>
+              <ellipse cx="0" cy="-12.5" rx="3.1" ry="7" transform="rotate(180)"></ellipse>
+              <ellipse cx="0" cy="-12.5" rx="3.1" ry="7" transform="rotate(216)"></ellipse>
+              <ellipse cx="0" cy="-12.5" rx="3.1" ry="7" transform="rotate(252)"></ellipse>
+              <ellipse cx="0" cy="-12.5" rx="3.1" ry="7" transform="rotate(288)"></ellipse>
+              <ellipse cx="0" cy="-12.5" rx="3.1" ry="7" transform="rotate(324)"></ellipse>
+            </g>
+            <circle cx="0" cy="0" r="6.4" fill="#7a4f08"></circle>
+            <circle cx="0" cy="0" r="3.1" fill="var(--gold)"></circle>
+          </g>
+        </svg>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:1px; min-width:0;">
+        <p style="margin:0; font-size:10.5px; font-weight:700; letter-spacing:.13em; text-transform:uppercase; color:var(--green);">Sunflower support</p>
+        <h1 style="margin:0; font-size:20px; font-weight:800; letter-spacing:-.01em; color:var(--green-deep); line-height:1.1;">ASD Helper Guide</h1>
+      </div>
+    </header>
+
+    <!-- Main card -->
+    <div style="background:var(--surface); border:1px solid var(--green-border); border-radius:var(--r-lg); box-shadow:var(--shadow); padding:18px; display:flex; flex-direction:column; gap:16px; animation:rise .4s ease both;">
+
+      <sc-if value="{{ notHome }}" hint-placeholder-val="{{ false }}">
+        <button type="button" onClick="{{ goHome }}" style="align-self:flex-start; display:inline-flex; align-items:center; gap:7px; padding:8px 14px 8px 11px; border:1px solid var(--green-border); border-radius:999px; background:var(--green-tint); color:var(--green-deep); font:inherit; font-size:13.5px; font-weight:700; cursor:pointer;" style-hover="background:var(--green-pale); border-color:var(--green);">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg>
+          Back to start
+        </button>
+      </sc-if>
+
+      <!-- ============ HOME ============ -->
+      <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex; flex-direction:column; gap:20px;">
+
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <h2 style="margin:0; font-size:25px; font-weight:800; letter-spacing:-.02em; line-height:1.12;">What is happening right now?</h2>
+          <p style="margin:0; font-size:14.5px; line-height:1.55; color:var(--muted);">Pick what fits this moment. We will walk through a few calm questions and give you practical, gentle next steps.</p>
+        </div>
+
+        <!-- Situation cards -->
+        <div style="display:flex; flex-direction:column; gap:10px;">
+
+          <button type="button" onClick="{{ startSensory }}" style="display:flex; align-items:center; gap:14px; width:100%; text-align:left; padding:15px 16px; border:1.5px solid var(--green-border); border-radius:var(--r-md); background:var(--surface); color:var(--ink); cursor:pointer; font:inherit; box-shadow:var(--shadow-sm); transition:border-color .16s ease, transform .16s ease, box-shadow .16s ease;" style-hover="border-color:var(--green); transform:translateY(-2px); box-shadow:0 16px 30px rgba(29,85,50,.12);">
+            <span style="flex:none; width:46px; height:46px; border-radius:13px; background:var(--green-pale); color:var(--green-deep); display:grid; place-items:center;">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2.4"></circle><path d="M6 12a6 6 0 0 1 12 0"></path><path d="M3.4 12a8.6 8.6 0 0 1 17.2 0"></path></svg>
+            </span>
+            <span style="display:flex; flex-direction:column; gap:2px; min-width:0; flex:1;">
+              <span style="font-size:16px; font-weight:700; line-height:1.2;">Sensory overload or meltdown</span>
+              <span style="font-size:12.5px; color:var(--muted); line-height:1.35;">Big distress, overwhelm, hard to cope</span>
+            </span>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--green)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M9 5l7 7-7 7"></path></svg>
+          </button>
+
+          <button type="button" onClick="{{ startCommunication }}" style="display:flex; align-items:center; gap:14px; width:100%; text-align:left; padding:15px 16px; border:1.5px solid var(--green-border); border-radius:var(--r-md); background:var(--surface); color:var(--ink); cursor:pointer; font:inherit; box-shadow:var(--shadow-sm); transition:border-color .16s ease, transform .16s ease, box-shadow .16s ease;" style-hover="border-color:var(--green); transform:translateY(-2px); box-shadow:0 16px 30px rgba(29,85,50,.12);">
+            <span style="flex:none; width:46px; height:46px; border-radius:13px; background:var(--green-pale); color:var(--green-deep); display:grid; place-items:center;">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h11A2.5 2.5 0 0 1 20 8.5v5A2.5 2.5 0 0 1 17.5 16H10l-4 3v-3a2.5 2.5 0 0 1-2-2.5z"></path><path d="M8.5 11h.01M12 11h.01M15.5 11h.01"></path></svg>
+            </span>
+            <span style="display:flex; flex-direction:column; gap:2px; min-width:0; flex:1;">
+              <span style="font-size:16px; font-weight:700; line-height:1.2;">Communication difficulty</span>
+              <span style="font-size:12.5px; color:var(--muted); line-height:1.35;">Words are hard, not answering, frustrated</span>
+            </span>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--green)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M9 5l7 7-7 7"></path></svg>
+          </button>
+
+          <button type="button" onClick="{{ startSchool }}" style="display:flex; align-items:center; gap:14px; width:100%; text-align:left; padding:15px 16px; border:1.5px solid var(--green-border); border-radius:var(--r-md); background:var(--surface); color:var(--ink); cursor:pointer; font:inherit; box-shadow:var(--shadow-sm); transition:border-color .16s ease, transform .16s ease, box-shadow .16s ease;" style-hover="border-color:var(--green); transform:translateY(-2px); box-shadow:0 16px 30px rgba(29,85,50,.12);">
+            <span style="flex:none; width:46px; height:46px; border-radius:13px; background:var(--green-pale); color:var(--green-deep); display:grid; place-items:center;">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2.2"></rect><path d="M4 9.5h16M9 5v3M15 5v3M8 14h4"></path></svg>
+            </span>
+            <span style="display:flex; flex-direction:column; gap:2px; min-width:0; flex:1;">
+              <span style="font-size:16px; font-weight:700; line-height:1.2;">School or transition struggle</span>
+              <span style="font-size:12.5px; color:var(--muted); line-height:1.35;">Refusing, clinging, after-school crash</span>
+            </span>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--green)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M9 5l7 7-7 7"></path></svg>
+          </button>
+
+          <button type="button" onClick="{{ startBody }}" style="display:flex; align-items:center; gap:14px; width:100%; text-align:left; padding:15px 16px; border:1.5px solid var(--green-border); border-radius:var(--r-md); background:var(--surface); color:var(--ink); cursor:pointer; font:inherit; box-shadow:var(--shadow-sm); transition:border-color .16s ease, transform .16s ease, box-shadow .16s ease;" style-hover="border-color:var(--green); transform:translateY(-2px); box-shadow:0 16px 30px rgba(29,85,50,.12);">
+            <span style="flex:none; width:46px; height:46px; border-radius:13px; background:var(--green-pale); color:var(--green-deep); display:grid; place-items:center;">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 2.5v6c0 4.2-3 7-7 9.5-4-2.5-7-5.3-7-9.5v-6z"></path><path d="M9.3 12l1.9 1.9 3.5-3.8"></path></svg>
+            </span>
+            <span style="display:flex; flex-direction:column; gap:2px; min-width:0; flex:1;">
+              <span style="font-size:16px; font-weight:700; line-height:1.2;">Public or private body behaviour</span>
+              <span style="font-size:12.5px; color:var(--muted); line-height:1.35;">Calm, private, practical body-care support</span>
+            </span>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--green)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M9 5l7 7-7 7"></path></svg>
+          </button>
+
+        </div>
+
+        <!-- Quick access -->
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <p style="margin:0; font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted);">Keep close</p>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+
+            <button type="button" onClick="{{ openProfile }}" style="display:flex; flex-direction:column; gap:9px; align-items:flex-start; text-align:left; padding:13px; border:1px solid var(--green-border); border-radius:var(--r-md); background:var(--green-tint); color:var(--ink); cursor:pointer; font:inherit;" style-hover="border-color:var(--green); background:var(--green-pale);">
+              <span style="width:34px; height:34px; border-radius:10px; background:var(--surface); color:var(--green-deep); display:grid; place-items:center; box-shadow:var(--shadow-sm);">
+                <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.3"></circle><path d="M5.5 19a6.5 6.5 0 0 1 13 0"></path></svg>
+              </span>
+              <span style="font-size:13.5px; font-weight:700; line-height:1.2;">Child profile</span>
+            </button>
+
+            <button type="button" onClick="{{ openSaved }}" style="display:flex; flex-direction:column; gap:9px; align-items:flex-start; text-align:left; padding:13px; border:1px solid var(--green-border); border-radius:var(--r-md); background:var(--green-tint); color:var(--ink); cursor:pointer; font:inherit;" style-hover="border-color:var(--green); background:var(--green-pale);">
+              <span style="width:34px; height:34px; border-radius:10px; background:var(--surface); color:var(--green-deep); display:grid; place-items:center; box-shadow:var(--shadow-sm);">
+                <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h12v16l-6-4-6 4z"></path></svg>
+              </span>
+              <span style="font-size:13.5px; font-weight:700; line-height:1.2;">Saved strategies</span>
+            </button>
+
+            <button type="button" onClick="{{ openEvidence }}" style="display:flex; flex-direction:column; gap:9px; align-items:flex-start; text-align:left; padding:13px; border:1px solid var(--green-border); border-radius:var(--r-md); background:var(--green-tint); color:var(--ink); cursor:pointer; font:inherit;" style-hover="border-color:var(--green); background:var(--green-pale);">
+              <span style="width:34px; height:34px; border-radius:10px; background:var(--surface); color:var(--green-deep); display:grid; place-items:center; box-shadow:var(--shadow-sm);">
+                <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="16" rx="2"></rect><path d="M8.5 9l1.6 1.6 3-3.2M8.5 15h7"></path></svg>
+              </span>
+              <span style="font-size:13.5px; font-weight:700; line-height:1.2;">Evidence-informed supports</span>
+            </button>
+
+            <button type="button" onClick="{{ openReading }}" style="display:flex; flex-direction:column; gap:9px; align-items:flex-start; text-align:left; padding:13px; border:1px solid var(--green-border); border-radius:var(--r-md); background:var(--green-tint); color:var(--ink); cursor:pointer; font:inherit;" style-hover="border-color:var(--green); background:var(--green-pale);">
+              <span style="width:34px; height:34px; border-radius:10px; background:var(--surface); color:var(--green-deep); display:grid; place-items:center; box-shadow:var(--shadow-sm);">
+                <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10.5 5 8 4.5 5 5v13c3-.5 5.5 0 7 1.5 1.5-1.5 4-2 7-1.5V5c-3-.5-5.5 0-7 1.5z"></path><path d="M12 6.5v13"></path></svg>
+              </span>
+              <span style="font-size:13.5px; font-weight:700; line-height:1.2;">Further reading</span>
+            </button>
+
+          </div>
+          <p style="margin:0; font-size:12px; line-height:1.5; color:var(--muted);">Saved profiles and strategies stay on this device only.</p>
+        </div>
+
+        <!-- Guide areas -->
+        <div style="display:flex; flex-direction:column; gap:11px;">
+          <p style="margin:0; font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted);">Guide areas</p>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <sc-for list="{{ guideTiles }}" as="tile" hint-placeholder-count="8">
+              <div style="display:flex; flex-direction:column; gap:8px; padding:13px; border:1px solid var(--green-border); border-radius:var(--r-md); background:var(--surface);">
+                <span style="width:32px; height:32px; border-radius:9px; background:var(--gold-pale); color:var(--gold-deep); display:grid; place-items:center;">{{ tile.icon }}</span>
+                <span style="font-size:13px; font-weight:700; line-height:1.2;">{{ tile.title }}</span>
+                <span style="font-size:11.5px; line-height:1.4; color:var(--muted);">{{ tile.blurb }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <!-- Further reading preview -->
+        <div style="display:flex; flex-direction:column; gap:11px;">
+          <div style="display:flex; align-items:baseline; justify-content:space-between; gap:10px;">
+            <p style="margin:0; font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted);">Further reading</p>
+            <button type="button" onClick="{{ openReading }}" style="border:none; background:none; padding:0; color:var(--green); font:inherit; font-size:12.5px; font-weight:700; cursor:pointer;">View all</button>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:9px;">
+            <sc-for list="{{ readingPreview }}" as="item" hint-placeholder-count="3">
+              <div style="padding:13px 14px; border:1px solid var(--green-border); border-radius:var(--r-md); background:var(--surface);">
+                <p style="margin:0 0 3px; font-size:10.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--green);">{{ item.category }}</p>
+                <p style="margin:0 0 2px; font-size:14.5px; font-weight:700; line-height:1.25;">{{ item.title }}</p>
+                <p style="margin:0; font-size:12px; color:var(--muted); line-height:1.4;">{{ item.author }}</p>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+      </div>
+      </sc-if>
+
+      <!-- ============ FLOW ============ -->
+      <sc-if value="{{ isFlow }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex; flex-direction:column; gap:18px;">
+        <div style="display:flex; flex-direction:column; gap:9px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+            <span style="font-size:11.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--green);">{{ flowTitle }}</span>
+            <span style="font-size:12.5px; font-weight:700; color:var(--muted);">Step {{ stepNumber }} of {{ stepTotal }}</span>
+          </div>
+          <div style="height:8px; border-radius:999px; background:var(--green-pale); overflow:hidden;">
+            <div style="height:100%; width: {{ progressPct }}; background:linear-gradient(90deg, var(--gold), var(--gold-bright)); border-radius:999px; transition:width .35s ease;"></div>
+          </div>
+        </div>
+
+        <h2 style="margin:0; font-size:23px; font-weight:800; letter-spacing:-.01em; line-height:1.2;">{{ question }}</h2>
+
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <sc-for list="{{ options }}" as="opt" hint-placeholder-count="4">
+            <button type="button" onClick="{{ opt.onSelect }}" style="display:flex; align-items:center; justify-content:space-between; gap:12px; width:100%; text-align:left; padding:16px 17px; border:1.5px solid var(--green-border); border-radius:var(--r-md); background:var(--surface); color:var(--ink); cursor:pointer; font:inherit; font-size:15.5px; font-weight:600; line-height:1.3; box-shadow:var(--shadow-sm); transition:border-color .16s ease, transform .16s ease;" style-hover="border-color:var(--green); transform:translateY(-1px); background:var(--green-tint);">
+              <span>{{ opt.label }}</span>
+              <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="var(--green)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M9 5l7 7-7 7"></path></svg>
+            </button>
+          </sc-for>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ RESULT ============ -->
+      <sc-if value="{{ isResult }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <div style="display:flex; flex-direction:column; gap:5px;">
+          <span style="font-size:11.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--green);">{{ flowTitle }}</span>
+          <h2 style="margin:0; font-size:24px; font-weight:800; letter-spacing:-.01em; line-height:1.18;">{{ resultHeading }}</h2>
+        </div>
+
+        <sc-if value="{{ hasAlert }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex; gap:11px; padding:14px 15px; border:1px solid var(--warn-border); border-radius:var(--r-md); background:var(--warn-bg); color:#6f3320;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--warn)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none; margin-top:1px;"><path d="M12 4l9 16H3z"></path><path d="M12 10v4M12 17.5h.01"></path></svg>
+            <p style="margin:0; font-size:13.5px; font-weight:600; line-height:1.5;">{{ alertText }}</p>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ hasScripts }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex; flex-direction:column; gap:9px;">
+            <p style="margin:0; font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);">Gentle words you can use</p>
+            <sc-for list="{{ scripts }}" as="line" hint-placeholder-count="2">
+              <blockquote style="margin:0; padding:13px 15px 13px 16px; border-left:4px solid var(--gold-bright); border-radius:0 var(--r-sm) var(--r-sm) 0; background:var(--gold-pale); color:var(--ink); font-size:14.5px; font-weight:600; line-height:1.5;">&ldquo;{{ line }}&rdquo;</blockquote>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <div style="display:flex; flex-direction:column; gap:11px;">
+          <sc-for list="{{ sections }}" as="section" hint-placeholder-count="4">
+            <div style="padding:15px; border:1px solid var(--green-border); border-radius:var(--r-md); background:var(--green-tint);">
+              <h3 style="margin:0 0 9px; font-size:15px; font-weight:800; color:var(--green-deep); line-height:1.25;">{{ section.title }}</h3>
+              <ul style="margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:8px;">
+                <sc-for list="{{ section.items }}" as="line" hint-placeholder-count="3">
+                  <li style="display:flex; gap:9px; font-size:13.5px; line-height:1.5; color:var(--ink);">
+                    <span style="flex:none; width:6px; height:6px; border-radius:999px; background:var(--green); margin-top:7px;"></span>
+                    <span>{{ line }}</span>
+                  </li>
+                </sc-for>
+              </ul>
+            </div>
+          </sc-for>
+        </div>
+
+        <details style="border:1px solid var(--green-border); border-radius:var(--r-md); background:var(--surface); padding:0;">
+          <summary style="list-style:none; cursor:pointer; padding:13px 15px; font-size:13px; font-weight:700; color:var(--green-deep); display:flex; align-items:center; justify-content:space-between;">
+            <span>Your answers</span>
+            <span style="font-size:11px; color:var(--muted); font-weight:600;">tap to review</span>
+          </summary>
+          <div style="padding:0 15px 14px; display:flex; flex-direction:column; gap:10px;">
+            <sc-for list="{{ answerRows }}" as="row" hint-placeholder-count="4">
+              <div style="display:flex; flex-direction:column; gap:2px;">
+                <span style="font-size:12px; font-weight:700; color:var(--ink); line-height:1.35;">{{ row.question }}</span>
+                <span style="font-size:13px; color:var(--green-deep); font-weight:600;">{{ row.answer }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </details>
+
+        <button type="button" onClick="{{ onSave }}" style="display:inline-flex; align-items:center; justify-content:center; gap:9px; width:100%; padding:15px; border:none; border-radius:999px; background:var(--gold-bright); color:#3c2c05; font:inherit; font-size:15px; font-weight:800; cursor:pointer; box-shadow:0 10px 22px rgba(207,147,15,.24);" style-hover="filter:brightness(1.03);">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h12v16l-6-4-6 4z"></path></svg>
+          Save this strategy
+        </button>
+        <sc-if value="{{ savedMsg }}" hint-placeholder-val="{{ false }}">
+          <p style="margin:0; text-align:center; font-size:13px; font-weight:700; color:var(--green);">{{ savedMsg }}</p>
+        </sc-if>
+      </div>
+      </sc-if>
+
+      <!-- ============ PROFILE ============ -->
+      <sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <div style="display:flex; flex-direction:column; gap:5px;">
+          <span style="font-size:11.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--green);">Child profile</span>
+          <h2 style="margin:0; font-size:23px; font-weight:800; letter-spacing:-.01em; line-height:1.18;">Helpful details to remember</h2>
+          <p style="margin:0; font-size:13.5px; line-height:1.55; color:var(--muted);">Keep what helps in one calm place. This stays on your device.</p>
+        </div>
+        <form onSubmit="{{ onSaveProfile }}" style="display:flex; flex-direction:column; gap:13px;">
+          <sc-for list="{{ profileFields }}" as="field" hint-placeholder-count="6">
+            <label style="display:flex; flex-direction:column; gap:6px; font-size:13px; font-weight:700; color:var(--ink);">
+              <span>{{ field.label }}</span>
+              <sc-if value="{{ field.isTextarea }}" hint-placeholder-val="{{ false }}">
+                <textarea rows="3" value="{{ field.value }}" onChange="{{ field.onChange }}" placeholder="{{ field.placeholder }}" style="width:100%; padding:11px 12px; border:1px solid var(--green-border); border-radius:var(--r-sm); background:var(--green-tint); color:var(--ink); font:inherit; font-size:14px; font-weight:500; line-height:1.5; resize:vertical;" style-focus="border-color:var(--green); outline:none; background:var(--surface);"></textarea>
+              </sc-if>
+              <sc-if value="{{ field.isInput }}" hint-placeholder-val="{{ false }}">
+                <input type="text" value="{{ field.value }}" onChange="{{ field.onChange }}" placeholder="{{ field.placeholder }}" style="width:100%; padding:11px 12px; border:1px solid var(--green-border); border-radius:var(--r-sm); background:var(--green-tint); color:var(--ink); font:inherit; font-size:14px; font-weight:500;" style-focus="border-color:var(--green); outline:none; background:var(--surface);">
+              </sc-if>
+            </label>
+          </sc-for>
+          <button type="submit" style="display:inline-flex; align-items:center; justify-content:center; gap:9px; width:100%; padding:15px; border:none; border-radius:999px; background:var(--green); color:#fff; font:inherit; font-size:15px; font-weight:800; cursor:pointer; box-shadow:0 10px 22px rgba(29,85,50,.2);" style-hover="filter:brightness(1.04);">Save profile</button>
+        </form>
+        <sc-if value="{{ profileMsg }}" hint-placeholder-val="{{ false }}">
+          <p style="margin:0; text-align:center; font-size:13px; font-weight:700; color:var(--green);">{{ profileMsg }}</p>
+        </sc-if>
+        <p style="margin:0; font-size:12px; line-height:1.5; color:var(--muted);">Saved profiles and strategies stay on this device only.</p>
+      </div>
+      </sc-if>
+
+      <!-- ============ SAVED ============ -->
+      <sc-if value="{{ isSaved }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <div style="display:flex; flex-direction:column; gap:5px;">
+          <span style="font-size:11.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--green);">Saved strategies</span>
+          <h2 style="margin:0; font-size:23px; font-weight:800; letter-spacing:-.01em; line-height:1.18;">Plans you wanted to keep</h2>
+        </div>
+        <sc-if value="{{ hasSaved }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex; flex-direction:column; gap:11px;">
+            <sc-for list="{{ savedList }}" as="item" hint-placeholder-count="2">
+              <div style="padding:15px; border:1px solid var(--green-border); border-radius:var(--r-md); background:var(--surface);">
+                <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:12px;">
+                  <div style="min-width:0; display:flex; flex-direction:column; gap:4px;">
+                    <h3 style="margin:0; font-size:15.5px; font-weight:800; color:var(--green-deep); line-height:1.25;">{{ item.flowTitle }}</h3>
+                    <p style="margin:0; font-size:12px; color:var(--muted);">Saved {{ item.savedAtLabel }}</p>
+                  </div>
+                  <button type="button" onClick="{{ item.onDelete }}" style="flex:none; padding:7px 12px; border:1px solid var(--warn-border); border-radius:999px; background:var(--warn-bg); color:#7a3d24; font:inherit; font-size:12px; font-weight:700; cursor:pointer;" style-hover="filter:brightness(.98);">Remove</button>
+                </div>
+                <div style="display:flex; flex-wrap:wrap; gap:7px; margin-top:11px;">
+                  <sc-for list="{{ item.sections }}" as="chip" hint-placeholder-count="4">
+                    <span style="padding:5px 11px; border-radius:999px; background:var(--green-pale); color:var(--green-deep); font-size:11.5px; font-weight:700; white-space:nowrap;">{{ chip }}</span>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ noSaved }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex; flex-direction:column; align-items:center; gap:11px; text-align:center; padding:30px 18px; border:1px dashed var(--green-border); border-radius:var(--r-md); background:var(--green-tint);">
+            <span style="width:44px; height:44px; border-radius:13px; background:var(--surface); color:var(--green); display:grid; place-items:center; box-shadow:var(--shadow-sm);">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h12v16l-6-4-6 4z"></path></svg>
+            </span>
+            <p style="margin:0; font-size:14px; font-weight:700;">No saved strategies yet</p>
+            <p style="margin:0; font-size:13px; color:var(--muted); line-height:1.5; max-width:24ch;">Finish a guide and tap &ldquo;Save this strategy&rdquo; to keep it here for next time.</p>
+            <button type="button" onClick="{{ goHome }}" style="margin-top:2px; padding:11px 18px; border:none; border-radius:999px; background:var(--green); color:#fff; font:inherit; font-size:13.5px; font-weight:700; cursor:pointer;">Start a guide</button>
+          </div>
+        </sc-if>
+      </div>
+      </sc-if>
+
+      <!-- ============ EVIDENCE ============ -->
+      <sc-if value="{{ isEvidence }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex; flex-direction:column; gap:15px;">
+        <div style="display:flex; flex-direction:column; gap:5px;">
+          <span style="font-size:11.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--green);">Evidence-informed supports</span>
+          <h2 style="margin:0; font-size:23px; font-weight:800; letter-spacing:-.01em; line-height:1.18;">Support ideas for common situations</h2>
+        </div>
+        <p style="margin:0; padding:12px 14px; border:1px solid var(--green-border); border-radius:var(--r-sm); background:var(--green-tint); font-size:12.5px; line-height:1.5; color:var(--muted);">General educational support information. This is not a diagnostic tool and does not replace professional advice.</p>
+
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div style="position:relative;">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position:absolute; left:13px; top:50%; transform:translateY(-50%);"><circle cx="11" cy="11" r="6.5"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+            <input type="search" value="{{ searchTerm }}" onChange="{{ onSearch }}" placeholder="Try sensory, school, sleep..." style="width:100%; padding:12px 13px 12px 38px; border:1px solid var(--green-border); border-radius:var(--r-sm); background:var(--surface); color:var(--ink); font:inherit; font-size:14px;" style-focus="border-color:var(--green); outline:none;">
+          </div>
+          <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            <sc-for list="{{ categoryChips }}" as="chip" hint-placeholder-count="5">
+              <button type="button" onClick="{{ chip.onSelect }}" style="padding:8px 14px; border:1px solid {{ chip.border }}; border-radius:999px; background: {{ chip.bg }}; color: {{ chip.color }}; font:inherit; font-size:12.5px; font-weight:700; cursor:pointer; white-space:nowrap;">{{ chip.label }}</button>
+            </sc-for>
+          </div>
+          <p style="margin:0; font-size:12.5px; font-weight:700; color:var(--muted);">Showing {{ shownCount }} of {{ totalCount }}</p>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:11px;">
+          <sc-for list="{{ evidenceList }}" as="item" hint-placeholder-count="4">
+            <div style="padding:15px; border:1px solid var(--green-border); border-radius:var(--r-md); background:var(--surface); display:flex; flex-direction:column; gap:11px;">
+              <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:11px;">
+                <div style="min-width:0;">
+                  <p style="margin:0 0 3px; font-size:10.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--green);">{{ item.category }}</p>
+                  <h3 style="margin:0; font-size:16px; font-weight:800; line-height:1.25; color:var(--ink);">{{ item.title }}</h3>
+                </div>
+                <span style="flex:none; padding:5px 10px; border-radius:999px; background:var(--gold-pale); color:var(--gold-deep); font-size:11px; font-weight:800; line-height:1.2;">{{ item.evidence_level }}</span>
+              </div>
+              <p style="margin:0; font-size:13px; line-height:1.5; color:var(--muted);"><span style="color:var(--ink); font-weight:700;">Situation:</span> {{ item.situation }}</p>
+              <p style="margin:0; font-size:13px; line-height:1.5; color:var(--muted);"><span style="color:var(--ink); font-weight:700;">Caregiver goal:</span> {{ item.caregiver_goal }}</p>
+
+              <div style="display:flex; flex-direction:column; gap:5px;">
+                <span style="font-size:12px; font-weight:800; color:var(--green-deep);">Try first</span>
+                <ul style="margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:6px;">
+                  <sc-for list="{{ item.try_first }}" as="line" hint-placeholder-count="3"><li style="display:flex; gap:8px; font-size:12.5px; line-height:1.5; color:var(--ink);"><span style="flex:none; width:5px; height:5px; border-radius:999px; background:var(--green); margin-top:7px;"></span><span>{{ line }}</span></li></sc-for>
+                </ul>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:5px;">
+                <span style="font-size:12px; font-weight:800; color:var(--warn);">Avoid</span>
+                <ul style="margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:6px;">
+                  <sc-for list="{{ item.avoid }}" as="line" hint-placeholder-count="2"><li style="display:flex; gap:8px; font-size:12.5px; line-height:1.5; color:var(--ink);"><span style="flex:none; width:5px; height:5px; border-radius:999px; background:var(--warn); margin-top:7px;"></span><span>{{ line }}</span></li></sc-for>
+                </ul>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:5px;">
+                <span style="font-size:12px; font-weight:800; color:var(--gold-deep);">When to seek help</span>
+                <ul style="margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:6px;">
+                  <sc-for list="{{ item.when_to_seek_help }}" as="line" hint-placeholder-count="2"><li style="display:flex; gap:8px; font-size:12.5px; line-height:1.5; color:var(--ink);"><span style="flex:none; width:5px; height:5px; border-radius:999px; background:var(--gold); margin-top:7px;"></span><span>{{ line }}</span></li></sc-for>
+                </ul>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ READING ============ -->
+      <sc-if value="{{ isReading }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex; flex-direction:column; gap:15px;">
+        <div style="display:flex; flex-direction:column; gap:5px;">
+          <span style="font-size:11.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--green);">Further reading</span>
+          <h2 style="margin:0; font-size:23px; font-weight:800; letter-spacing:-.01em; line-height:1.18;">Background resources</h2>
+          <p style="margin:0; font-size:13.5px; line-height:1.55; color:var(--muted);">Optional reading to review periodically. A mix of autistic voices, practical support, and reference sources.</p>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:11px;">
+          <sc-for list="{{ readingList }}" as="item" hint-placeholder-count="6">
+            <div style="padding:15px; border:1px solid var(--green-border); border-radius:var(--r-md); background:var(--surface);">
+              <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:11px;">
+                <p style="margin:0 0 5px; font-size:10.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--green);">{{ item.category }}</p>
+                <span style="flex:none; padding:4px 9px; border-radius:999px; background:var(--green-pale); color:var(--green-deep); font-size:10.5px; font-weight:700;">{{ item.source_type }}</span>
+              </div>
+              <h3 style="margin:0 0 3px; font-size:16px; font-weight:800; line-height:1.25; color:var(--ink);">{{ item.title }}</h3>
+              <p style="margin:0 0 8px; font-size:12.5px; font-weight:700; color:var(--green-deep);">{{ item.author }}</p>
+              <p style="margin:0; font-size:13px; line-height:1.55; color:var(--muted);">{{ item.short_original_summary }}</p>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      </sc-if>
+
+    </div>
+
+    <p style="margin:0; padding:0 8px; text-align:center; font-size:11.5px; line-height:1.55; color:var(--muted);">This app provides general educational support information. It is not a diagnostic tool and does not replace professional advice.</p>
+
+  </div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:468,&quot;height&quot;:920},&quot;greenVar&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#2e7a48&quot;,&quot;options&quot;:[&quot;#2e7a48&quot;,&quot;#1f6b3b&quot;,&quot;#3e8e41&quot;,&quot;#2f7d52&quot;],&quot;tsType&quot;:&quot;string&quot;},&quot;goldVar&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#f6c544&quot;,&quot;options&quot;:[&quot;#f6c544&quot;,&quot;#f4b92e&quot;,&quot;#fbcb3e&quot;,&quot;#e6a91c&quot;],&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = {
+    view: 'home',
+    activeFlowKey: '',
+    currentStep: 0,
+    answers: {},
+    profile: { nickname:'', age:'', triggers:'', calmingTools:'', communicationPreferences:'', schoolNotes:'' },
+    savedStrategies: [],
+    profileMsg: '',
+    savedMsg: '',
+    searchTerm: '',
+    activeCategory: 'All',
+  };
+
+  PROFILE_KEY = 'asd-aid-child-profile';
+  STRAT_KEY = 'asd-aid-saved-strategies';
+
+  componentDidMount() {
+    try {
+      const p = JSON.parse(window.localStorage.getItem(this.PROFILE_KEY) || 'null');
+      if (p) this.setState({ profile: { ...this.state.profile, ...p } });
+    } catch (e) {}
+    try {
+      const s = JSON.parse(window.localStorage.getItem(this.STRAT_KEY) || '[]');
+      if (Array.isArray(s)) this.setState({ savedStrategies: this.sortStrats(s) });
+    } catch (e) {}
+  }
+
+  sortStrats(list) {
+    return [...list].sort((a, b) => new Date(b.savedAt).getTime() - new Date(a.savedAt).getTime());
+  }
+
+  // ---------- data ----------
+  situations = [
+    { label: 'Sensory overload / meltdown', flowKey: 'sensory' },
+    { label: 'Communication difficulty', flowKey: 'communication' },
+    { label: 'School or transition struggle', flowKey: 'schoolTransition' },
+    { label: 'Public / private body behaviour', flowKey: 'bodyBehaviour' },
+  ];
+
+  flows = {
+    sensory: {
+      title: 'Sensory overload / meltdown',
+      steps: [
+        { key:'safe', question:'Is the child safe right now?', options:['Yes','No, immediate risk'] },
+        { key:'words', question:'Can the child speak or process words right now?', options:['Yes','No, shutting down or non-speaking'] },
+        { key:'signs', question:'What signs are you seeing?', options:['covering ears/hiding','crying/screaming','running/climbing','freezing/shutdown','hitting/throwing'] },
+        { key:'trigger', question:'What may have triggered it?', options:['noise/crowd','lights/visual overload','transition/change','demand/task','hunger/tiredness/pain','unknown'] },
+      ],
+      resultHeading: 'Here are calm next steps.',
+      alertAnswer: 'No, immediate risk',
+      alertText: 'Move dangerous items away, reduce demands, and seek urgent help if anyone may be hurt.',
+      resultSections: [
+        { title:'Immediate steps', items:['Use a calm voice and slow movements.','Lower noise, lights, touch, and talking where you can.','Offer space, a familiar comfort item, or a quieter place.','Use short words or visual choices if words are hard right now.'] },
+        { title:'What to avoid', items:['Avoid extra questions, lectures, or pressure to explain.','Avoid forcing eye contact or physical contact.','Avoid sudden changes unless safety requires it.','Avoid making the moment a behaviour lesson while the child is overwhelmed.'] },
+        { title:'Body checks', items:['Check for hunger, thirst, tiredness, heat, cold, pain, or clothing discomfort.','Look for signs the child needs toileting, rest, or a break from sensory input.','When things are calmer, note what helped and what seemed to make it harder.'] },
+        { title:'When to get help', items:['Get help if anyone may be hurt, the child cannot move to safety, or the situation feels unsafe.','Contact a trusted professional if episodes are becoming more frequent, intense, or hard to recover from.','Use emergency services if there is immediate danger.'] },
+      ],
+    },
+    communication: {
+      title: 'Communication difficulty',
+      steps: [
+        { key:'current', question:'What is happening right now?', options:['not answering','repeating words/sounds','crying/frustrated','pointing/pulling adult','saying no to everything','seems confused'] },
+        { key:'words', question:'Can the child use words right now?', options:['yes','some words','no words right now','not sure'] },
+        { key:'need', question:'What might they need?', options:['help','break','food/drink','toilet','comfort','more time','different activity','unknown'] },
+        { key:'harder', question:'What makes communication harder right now?', options:['too many words','too many choices','noise/overload','pressure to answer','change in routine','tiredness/hunger/pain','unknown'] },
+      ],
+      resultHeading: 'Support communication without pressure.',
+      scripts: ['You do not need to talk. Show me or point.','First calm, then we solve.','Do you want help or a break?'],
+      resultSections: [
+        { title:'Immediate communication support', items:['Use fewer words and keep your voice calm.','Pause and wait so the child has time to process.','Offer two simple choices, or one clear next step.','Accept pointing, gestures, objects, or showing instead of speech.'] },
+        { title:'What to say', items:['Use the scripts above in a steady, predictable way.','Name what you can see without asking for an explanation.','Try short choices such as help or break, drink or toilet, here or quiet space.'] },
+        { title:'What to avoid', items:['Do not demand eye contact or force speech during distress.','Avoid repeating the same question quickly.','Avoid too many choices, long explanations, or pressure to answer now.'] },
+        { title:'Visual / support options', items:['Use visuals, pointing, gestures, or objects to help the child communicate.','Offer a picture card, first/then card, yes/no choice, or familiar item.','Let the child show you what they need if words are not available.'] },
+        { title:'Body checks', items:['Check tiredness, hunger, thirst, toileting, pain, heat, cold, and sensory overload.','Look for signs that the child needs a break, comfort, movement, or a quieter space.','Notice whether communication improves after the body need is met.'] },
+        { title:'When to seek extra help', items:['Seek extra help if communication changes suddenly, distress is increasing, or daily needs are hard to understand.','Ask a trusted professional or school support person for practical communication supports.','Get urgent help if anyone may be hurt or the child cannot be kept safe.'] },
+      ],
+    },
+    schoolTransition: {
+      title: 'School or transition struggle',
+      steps: [
+        { key:'struggle', question:'What is the main struggle right now?', options:['refusing to go','crying/clinging','running away/hiding','aggressive distress','shutting down','after-school crash'] },
+        { key:'timing', question:'When does it happen most?', options:['morning before school','school drop-off','classroom entry','transitions during school','pickup/after school','bedtime before school'] },
+        { key:'driver', question:'What might be driving it?', options:['sensory overload','separation anxiety','change in routine','social pressure','demand/task avoidance','tiredness/hunger/pain','unknown'] },
+        { key:'support', question:'What support is already in place?', options:['none yet','teacher knows','learning support plan','reduced hours','calm space','visual schedule','not sure'] },
+      ],
+      resultHeading: 'Start with a calmer transition plan.',
+      scripts: ['Hi, we are noticing school transitions are becoming very hard for him. Could we work together on a simple support plan with a calm entry routine, discreet breaks, and a way to reduce overload before it becomes too much?'],
+      resultSections: [
+        { title:'Immediate steps for today', items:['Reduce pressure and avoid long explanations during distress.','Use short, predictable language, such as first shoes, then car.','Offer a calm transition object, visual schedule, or first/then plan.','Choose the smallest next step and give time for the child to move toward it.'] },
+        { title:'What to avoid', items:['Avoid arguing, bargaining, or asking lots of why questions in the moment.','Avoid rushing with surprise changes unless safety requires it.','Avoid turning the transition into a lesson while the child is overwhelmed.'] },
+        { title:'Things to check', items:['Check sleep, food, toileting, pain, clothing comfort, and morning sensory load.','Look for patterns around certain days, people, rooms, noise, or timetable changes.','Track patterns: day, time, trigger, sleep, food, and what helped.'] },
+        { title:'School support ideas', items:['Ask for a calm entry routine with one predictable adult and fewer words.','Use a visual schedule, first/then card, or quiet arrival job.','Plan discreet breaks before overload builds, not only after distress starts.','Consider a reduced-demand start to the day while the routine settles.'] },
+        { title:'A message you can send to school', items:['Use the message above as a starting point and adjust names or details as needed.','Ask for one or two practical changes first so the plan is easy to try.','Share what helped at home and ask what staff are noticing at school.'] },
+        { title:'When to seek extra help', items:['Seek extra help if distress is escalating, safety is hard to manage, or school attendance is becoming very difficult.','Ask school support staff or a trusted professional for help building a shared plan.','Get urgent help if anyone may be hurt or the child cannot be kept safe.'] },
+      ],
+    },
+    bodyBehaviour: {
+      title: 'Public / private body behaviour',
+      steps: [
+        { key:'concern', question:'Is anyone unsafe or distressed right now?', options:['No','Yes, immediate concern'] },
+        { key:'discomfort', question:'Could there be physical discomfort?', options:['possible rash/chafing','toileting/UTI signs','constipation/tummy discomfort','tight clothing/waistband','not sure'] },
+        { key:'location', question:'Where is it happening most?', options:['school/classroom','car/travel','home','public place','bedtime/private space'] },
+        { key:'trigger', question:'What seems to trigger it?', options:['sitting still','sensory overload','anxiety/stress','boredom/waiting','clothing discomfort','unknown'] },
+      ],
+      resultHeading: 'Try these calm, practical supports.',
+      alertAnswer: 'Yes, immediate concern',
+      alertText: 'Move calmly, protect privacy, reduce attention, and get help if anyone is unsafe or very distressed.',
+      scripts: ['Your body is private. Private parts are for private places like the bathroom or bedroom. At school and in public, hands stay outside clothes.'],
+      resultSections: [
+        { title:'First checks', items:['Check pain, toileting, rash, constipation, and clothing discomfort first.','Look for chafing, tight waistbands, itchy seams, heat, or needing the toilet.','If this is new, intense, or linked with pain, consider checking in with a health professional.'] },
+        { title:'Calm language to use', items:['Use a quiet, neutral voice and keep words short.','Say the private body script the same way each time.','Give a simple next step, such as bathroom, hands out, or choose a fidget.'] },
+        { title:'What to avoid', items:['Do not shame, punish, or make a big public reaction.','Avoid long explanations in the moment.','Avoid joking, teasing, or drawing attention from other people.'] },
+        { title:'Replacement supports', items:['Offer a fidget, chew-safe item, weighted lap pad, movement break, or hands-on task.','Use a visual reminder for private place and public place rules.','Plan regular toilet breaks and clothing checks before longer sitting times.'] },
+        { title:'School / support plan ideas', items:['Use discreet redirection at school, such as a quiet cue card or calm prompt.','Agree on a private break option, bathroom pass, or sensory break plan.','Track patterns without blame: time, place, clothing, toileting, waiting, and stress.'] },
+        { title:'When to seek help', items:['Seek help if there is pain, toileting concern, rash, injury, or sudden behaviour change.','Ask for support if the behaviour is frequent, escalating, or hard to redirect safely.','Get urgent help if anyone may be harmed or the child is very distressed.'] },
+      ],
+    },
+  };
+
+  furtherReading = [
+    { id:'sincerely', category:'Autistic-authored perspectives', title:'Sincerely, Your Autistic Child', author:'Autistic Women & Nonbinary Network contributors', source_type:'Book', short_original_summary:'Autistic adults reflect on childhood, family support, identity, communication, and respect. Useful for caregivers who want to understand support from autistic perspectives.' },
+    { id:'uniquely', category:'Parent and caregiver support', title:'Uniquely Human', author:'Barry M. Prizant with Tom Fields-Meyer', source_type:'Book', short_original_summary:'Frames autistic behaviour as communication and adaptation rather than misbehaviour. Helpful for shifting adult responses toward curiosity and support.' },
+    { id:'morethan', category:'Communication support', title:'More Than Words', author:'Fern Sussman', source_type:'Program resource', short_original_summary:'Practical caregiver strategies for noticing communication, joining the child\u2019s focus, and building everyday interaction opportunities.' },
+    { id:'thinking', category:'Parent and caregiver support', title:'Thinking Person\u2019s Guide to Autism', author:'Shannon Des Roches Rosa and others', source_type:'Book', short_original_summary:'A broad collection of essays and practical perspectives to help families think critically about support, respect, and everyday decisions.' },
+    { id:'sensory', category:'Sensory support', title:'Sensory Perceptual Issues in Autism', author:'Olga Bogdashina', source_type:'Book', short_original_summary:'Explores how sensory differences can affect daily life, learning, distress, and behaviour. Useful for adults planning sensory-aware environments.' },
+    { id:'fivepoint', category:'Emotional regulation', title:'The Incredible 5-Point Scale', author:'Kari Dunn Buron and Mitzi Curtis', source_type:'Resource', short_original_summary:'A simple visual scale format adults can adapt to help children identify intensity, expectations, and coping options.' },
+    { id:'explosive', category:'Emotional regulation', title:'The Explosive Child', author:'Ross W. Greene', source_type:'Book', short_original_summary:'Focuses on unmet skills and collaborative problem-solving when children have frequent conflict or distress. A less punitive lens for adults.' },
+    { id:'discussion', category:'School and education', title:'The Autism Discussion Page', author:'Bill Nason', source_type:'Book', short_original_summary:'Practical reflections on anxiety, school demands, behaviour, and adult responses. A useful conversation starter for support planning.' },
+    { id:'earlystart', category:'Parent and caregiver support', title:'An Early Start for Your Child with Autism', author:'Sally J. Rogers, Geraldine Dawson & Laurie A. Vismara', source_type:'Book', short_original_summary:'Ways caregivers can build interaction, play, and learning into everyday routines with young children.' },
+    { id:'everybody', category:'Sibling and family support', title:'Everybody Is Different', author:'Fiona Bleach', source_type:'Book', short_original_summary:'A family-oriented resource to support conversations with siblings about autism, differences, fairness, and family life.' },
+    { id:'nice', category:'Professional / reference', title:'Autism spectrum disorder in under 19s', author:'National Institute for Health and Care Excellence', source_type:'Guideline', short_original_summary:'Clinical guideline covering support and management for autistic children and young people, including family support and co-occurring needs.' },
+    { id:'ncaep', category:'Professional / reference', title:'Evidence-Based Practices for Autism', author:'National Clearinghouse on Autism Evidence and Practice', source_type:'Evidence report', short_original_summary:'A research review identifying practices with evidence for autistic children, youth, and young adults across learning and support areas.' },
+  ];
+
+  evidence = [
+    { id:'visual-schedules', category:'Routines & transitions', title:'Visual schedules and first/then', situation:'Transitions, changes, and unclear expectations cause distress.', caregiver_goal:'Make what happens next predictable and calm.', evidence_level:'Strong support', try_first:['Show a simple picture or written schedule of the next steps.','Use a first/then format: first shoes, then car.','Point to the next step instead of repeating verbal demands.'], avoid:['Avoid surprise changes without warning.','Avoid long verbal explanations during distress.'], when_to_seek_help:['Ask school support if transitions stay very hard across settings.'] },
+    { id:'sensory-breaks', category:'Sensory support', title:'Planned sensory breaks', situation:'Overload builds during busy, noisy, or bright environments.', caregiver_goal:'Lower sensory load before it tips into meltdown.', evidence_level:'Moderate support', try_first:['Offer a quiet space or noise-reducing headphones early.','Schedule movement or calm breaks before overload, not only after.','Reduce competing noise, light, and talking.'], avoid:['Avoid waiting until full distress to offer a break.','Avoid crowding or adding more demands.'], when_to_seek_help:['Seek an occupational therapy view if overload is frequent or hard to predict.'] },
+    { id:'aac-choices', category:'Communication', title:'Two-choice communication & AAC', situation:'Words are hard to find, especially under stress.', caregiver_goal:'Give a low-pressure way to express needs.', evidence_level:'Strong support', try_first:['Offer two clear choices: help or break, drink or toilet.','Accept pointing, gestures, objects, or picture cards.','Pause and wait to allow processing time.'], avoid:['Avoid demanding speech or eye contact during distress.','Avoid rapid-fire repeated questions.'], when_to_seek_help:['Ask a speech-language professional about a personalised AAC plan.'] },
+    { id:'co-regulation', category:'Emotional regulation', title:'Co-regulation and calm presence', situation:'Big emotions the child cannot yet manage alone.', caregiver_goal:'Lend your calm so the child can settle.', evidence_level:'Emerging support', try_first:['Lower your voice, slow your movements, and reduce words.','Stay nearby and offer space rather than crowding.','Name the feeling gently without demanding a response.'], avoid:['Avoid lecturing or problem-solving mid-distress.','Avoid consequences while the child is overwhelmed.'], when_to_seek_help:['Seek support if distress is escalating or recovery is taking longer over time.'] },
+    { id:'sleep-routine', category:'Sleep', title:'Predictable wind-down routine', situation:'Bedtime resistance and difficulty settling.', caregiver_goal:'Make sleep cues consistent and calming.', evidence_level:'Moderate support', try_first:['Keep the same short steps in the same order each night.','Dim lights and lower stimulation an hour before bed.','Use a visual bedtime sequence.'], avoid:['Avoid screens and high-energy play right before bed.','Avoid changing the routine night to night.'], when_to_seek_help:['Talk to a professional if sleep problems are persistent or affecting daytime wellbeing.'] },
+    { id:'positive-behaviour', category:'Daily living', title:'Understanding behaviour as communication', situation:'Behaviour that seems confusing or repeated.', caregiver_goal:'Find the unmet need behind the behaviour.', evidence_level:'Strong support', try_first:['Check body needs first: hunger, pain, toileting, tiredness, sensory load.','Note what happens before and after to spot patterns.','Teach and support a calmer way to meet the same need.'], avoid:['Avoid assuming the behaviour is just defiance.','Avoid shame-based or punitive responses.'], when_to_seek_help:['Seek a functional assessment if behaviour is intense, frequent, or unsafe.'] },
+  ];
+
+  guideTiles = [
+    { type:'communication', title:'Communication support', blurb:'Fewer words, clear choices, time to process.' },
+    { type:'sensory', title:'Sensory overload', blurb:'Lower noise, light and demands; offer space.' },
+    { type:'calm', title:'Calm strategy', blurb:'Breathing, quiet corner, co-regulation.' },
+    { type:'routine', title:'Routine change', blurb:'Visual schedules and gentle first/then steps.' },
+    { type:'meltdown', title:'Meltdown support', blurb:'Safety, space and calm \u2014 not a lesson.' },
+    { type:'shutdown', title:'Shutdown support', blurb:'Quiet, low-demand presence and rest.' },
+    { type:'help', title:'Asking for help', blurb:'Cards, gestures and simple help signals.' },
+    { type:'caregiver', title:'Caregiver support', blurb:'Checklists and reminders for the adult too.' },
+  ];
+
+  profileMeta = [
+    { key:'nickname', label:'Child nickname', type:'input', placeholder:'What you call them' },
+    { key:'age', label:'Age', type:'input', placeholder:'e.g. 7' },
+    { key:'triggers', label:'Main triggers', type:'textarea', placeholder:'Noise, transitions, hunger...' },
+    { key:'calmingTools', label:'Calming tools', type:'textarea', placeholder:'Headphones, quiet corner, a favourite toy...' },
+    { key:'communicationPreferences', label:'Communication preferences', type:'textarea', placeholder:'Pictures, short choices, extra time...' },
+    { key:'schoolNotes', label:'School notes', type:'textarea', placeholder:'Support plan, key adult, helpful arrangements...' },
+  ];
+
+  // ---------- icons ----------
+  icon(type) {
+    const e = React.createElement;
+    const svg = (kids) => e('svg', { viewBox:'0 0 24 24', width:18, height:18, fill:'none', stroke:'currentColor', strokeWidth:1.9, strokeLinecap:'round', strokeLinejoin:'round' }, kids);
+    const paths = {
+      communication: [ e('path',{key:1,d:'M4 8.5A2.5 2.5 0 0 1 6.5 6h11A2.5 2.5 0 0 1 20 8.5v5A2.5 2.5 0 0 1 17.5 16H10l-4 3v-3a2.5 2.5 0 0 1-2-2.5z'}), e('path',{key:2,d:'M8.5 11h.01M12 11h.01M15.5 11h.01'}) ],
+      sensory: [ e('circle',{key:1,cx:12,cy:12,r:2.4}), e('path',{key:2,d:'M6 12a6 6 0 0 1 12 0'}), e('path',{key:3,d:'M3.4 12a8.6 8.6 0 0 1 17.2 0'}) ],
+      calm: [ e('circle',{key:1,cx:12,cy:12,r:7}), e('circle',{key:2,cx:12,cy:12,r:2.2,fill:'currentColor',stroke:'none'}) ],
+      routine: [ e('rect',{key:1,x:4,y:5,width:16,height:15,rx:2.2}), e('path',{key:2,d:'M4 9.5h16M9 5v3M15 5v3M8 14h4'}) ],
+      meltdown: [ e('circle',{key:1,cx:12,cy:8,r:2.5}), e('path',{key:2,d:'M6 19c0-3 2.5-5 6-5s6 2 6 5'}) ],
+      shutdown: [ e('path',{key:1,d:'M20 13.5A7.5 7.5 0 1 1 11 4.2a6 6 0 0 0 9 9.3z'}) ],
+      help: [ e('path',{key:1,d:'M5 6.5A2.5 2.5 0 0 1 7.5 4h9A2.5 2.5 0 0 1 19 6.5v6A2.5 2.5 0 0 1 16.5 15H11l-4 3v-3H7.5A2.5 2.5 0 0 1 5 12.5z'}), e('path',{key:2,d:'M10 8.4a2 2 0 1 1 3 1.7c-.7.5-1 .8-1 1.5M12 13.5h.01'}) ],
+      caregiver: [ e('path',{key:1,d:'M12 20s-7-4.4-7-9.3A3.7 3.7 0 0 1 12 8a3.7 3.7 0 0 1 7 1.7C19 15.6 12 20 12 20z'}) ],
+    };
+    return svg(paths[type] || paths.calm);
+  }
+
+  // ---------- nav ----------
+  startFlow(key) { this.setState({ view:'flow', activeFlowKey:key, currentStep:0, answers:{}, savedMsg:'' }); }
+  goHome() { this.setState({ view:'home', activeFlowKey:'', currentStep:0, answers:{}, profileMsg:'', savedMsg:'' }); }
+
+  chooseAnswer(answer) {
+    const flow = this.flows[this.state.activeFlowKey];
+    const step = flow.steps[this.state.currentStep];
+    const answers = { ...this.state.answers, [step.key]: answer };
+    if (this.state.currentStep === flow.steps.length - 1) {
+      this.setState({ answers, view:'result' });
+    } else {
+      this.setState({ answers, currentStep: this.state.currentStep + 1 });
+    }
+  }
+
+  setProfileField(key, value) {
+    this.setState({ profile: { ...this.state.profile, [key]: value }, profileMsg:'' });
+  }
+  saveProfile(e) {
+    e.preventDefault();
+    window.localStorage.setItem(this.PROFILE_KEY, JSON.stringify(this.state.profile));
+    this.setState({ profileMsg:'Profile saved on this device.' });
+  }
+
+  saveStrategy() {
+    const flow = this.flows[this.state.activeFlowKey];
+    if (!flow) return;
+    const strategy = {
+      id: (crypto.randomUUID ? crypto.randomUUID() : String(Date.now())),
+      flowTitle: flow.title,
+      savedAt: new Date().toISOString(),
+      sections: flow.resultSections.map(s => s.title),
+    };
+    const updated = [strategy, ...this.state.savedStrategies];
+    window.localStorage.setItem(this.STRAT_KEY, JSON.stringify(updated));
+    this.setState({ savedStrategies: updated, savedMsg:'Saved. Find it under Saved strategies.' });
+  }
+  deleteStrategy(id) {
+    const updated = this.state.savedStrategies.filter(s => s.id !== id);
+    window.localStorage.setItem(this.STRAT_KEY, JSON.stringify(updated));
+    this.setState({ savedStrategies: updated });
+  }
+
+  fmtDate(iso) {
+    try { return new Date(iso).toLocaleDateString(undefined, { day:'numeric', month:'short', year:'numeric' }); }
+    catch (e) { return ''; }
+  }
+
+  renderVals() {
+    const v = this.state.view;
+    const flow = this.flows[this.state.activeFlowKey];
+    const step = flow ? flow.steps[this.state.currentStep] : null;
+
+    // result data
+    let scripts = [], answerRows = [], sections = [], hasAlert = false, alertText = '', resultHeading = '', flowTitle = '';
+    if (flow) {
+      flowTitle = flow.title;
+      resultHeading = flow.resultHeading;
+      scripts = flow.scripts || (flow.script ? [flow.script] : []);
+      sections = flow.resultSections;
+      answerRows = flow.steps.map(s => ({ question: s.question, answer: this.state.answers[s.key] || '\u2014' }));
+      hasAlert = flow.alertAnswer ? Object.values(this.state.answers).includes(flow.alertAnswer) : false;
+      alertText = flow.alertText || '';
+    }
+
+    // evidence filtering
+    const term = this.state.searchTerm.trim().toLowerCase();
+    const cats = ['All', ...Array.from(new Set(this.evidence.map(i => i.category)))];
+    const filtered = this.evidence.filter(i => {
+      const okCat = this.state.activeCategory === 'All' || i.category === this.state.activeCategory;
+      if (!okCat) return false;
+      if (!term) return true;
+      const hay = [i.title, i.category, i.situation, i.caregiver_goal, i.evidence_level, ...i.try_first, ...i.avoid, ...i.when_to_seek_help].join(' ').toLowerCase();
+      return hay.includes(term);
+    });
+    const categoryChips = cats.map(c => {
+      const active = this.state.activeCategory === c;
+      return {
+        label: c === 'All' ? 'All categories' : c,
+        bg: active ? 'var(--green)' : 'var(--surface)',
+        color: active ? '#ffffff' : 'var(--green-deep)',
+        border: active ? 'var(--green)' : 'var(--green-border)',
+        onSelect: () => this.setState({ activeCategory: c }),
+      };
+    });
+
+    return {
+      greenVar: this.props.greenVar ?? '#2e7a48',
+      goldVar: this.props.goldVar ?? '#f6c544',
+
+      isHome: v === 'home', isFlow: v === 'flow', isResult: v === 'result',
+      isProfile: v === 'profile', isSaved: v === 'saved', isEvidence: v === 'evidence', isReading: v === 'reading',
+      notHome: v !== 'home',
+
+      startSensory: () => this.startFlow('sensory'),
+      startCommunication: () => this.startFlow('communication'),
+      startSchool: () => this.startFlow('schoolTransition'),
+      startBody: () => this.startFlow('bodyBehaviour'),
+      openProfile: () => this.setState({ view:'profile', profileMsg:'' }),
+      openSaved: () => this.setState({ view:'saved' }),
+      openEvidence: () => this.setState({ view:'evidence' }),
+      openReading: () => this.setState({ view:'reading' }),
+      goHome: () => this.goHome(),
+
+      guideTiles: this.guideTiles.map(t => ({ ...t, icon: this.icon(t.type) })),
+      readingPreview: this.furtherReading.slice(0, 3),
+      readingList: this.furtherReading,
+
+      flowTitle,
+      stepNumber: this.state.currentStep + 1,
+      stepTotal: flow ? flow.steps.length : 0,
+      progressPct: flow ? Math.round(((this.state.currentStep + 1) / flow.steps.length) * 100) + '%' : '0%',
+      question: step ? step.question : '',
+      options: step ? step.options.map(o => ({ label: o, onSelect: () => this.chooseAnswer(o) })) : [],
+
+      resultHeading, hasAlert, alertText,
+      hasScripts: scripts.length > 0, scripts,
+      answerRows, sections,
+      onSave: () => this.saveStrategy(),
+      savedMsg: this.state.savedMsg,
+
+      profileFields: this.profileMeta.map(f => ({
+        label: f.label,
+        placeholder: f.placeholder,
+        isTextarea: f.type === 'textarea',
+        isInput: f.type === 'input',
+        value: this.state.profile[f.key] || '',
+        onChange: (e) => this.setProfileField(f.key, e.target.value),
+      })),
+      onSaveProfile: (e) => this.saveProfile(e),
+      profileMsg: this.state.profileMsg,
+
+      hasSaved: this.state.savedStrategies.length > 0,
+      noSaved: this.state.savedStrategies.length === 0,
+      savedList: this.state.savedStrategies.map(s => ({
+        flowTitle: s.flowTitle,
+        savedAtLabel: this.fmtDate(s.savedAt),
+        sections: s.sections || [],
+        onDelete: () => this.deleteStrategy(s.id),
+      })),
+
+      searchTerm: this.state.searchTerm,
+      onSearch: (e) => this.setState({ searchTerm: e.target.value }),
+      categoryChips,
+      shownCount: filtered.length,
+      totalCount: this.evidence.length,
+      evidenceList: filtered,
+    };
+  }
+}
+</script>
+</body>
+</html>

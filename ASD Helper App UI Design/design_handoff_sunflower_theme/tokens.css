@@ -1,0 +1,93 @@
+/* =====================================================================
+   ASD Helper Guide — Sunflower Lanyard theme
+   DROP-IN REPLACEMENT for the :root block in  src/index.css
+   ---------------------------------------------------------------------
+   Your existing variable NAMES are kept, so almost the entire app
+   re-skins with zero component changes. Only the VALUES change.
+   The few hardcoded hex values that live directly in App.css are
+   listed at the bottom of this file — patch those too.
+   ===================================================================== */
+
+/* 1. Load the brand font (add to index.html <head>, or keep this @import
+      at the very top of index.css). */
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* ---- Brand: leaf green (was blue #2f6f9e) ---- */
+  --color-primary:        #2e7a48;  /* primary actions, links, accents      */
+  --color-primary-soft:   #4f9b67;  /* hover borders, focus rings           */
+  --color-primary-pale:   #e7f1e9;  /* selected button bg, script-card bg,  */
+                                     /* saved-section chips                  */
+  --color-primary-deep:   #1d5532;  /* NEW — optional darker green for text  */
+
+  /* ---- Accent: sunflower gold (was warm orange #e9904a) ---- */
+  --color-accent:         #f6c544;  /* primary-action bg, script left-border */
+  --color-accent-deep:    #8a5f0c;  /* NEW — gold text on pale gold          */
+
+  /* ---- Surfaces & background ---- */
+  --color-background:      #f1efe6;  /* warm paper                           */
+  --color-background-warm: #f1f7f2;  /* decision-panel bg (soft green tint)  */
+  --color-surface:         #ffffff;
+  --color-surface-soft:    #e7f1e9;
+  --color-card:            #f7faf5;
+
+  /* ---- Lines & text ---- */
+  --color-border:          #d3e4d7;
+  --color-border-soft:     #e0ebe2;
+  --color-text:            #243029;  /* warm green-ink (was #183247)         */
+  --color-text-muted:      #5f6b62;
+
+  /* ---- Depth & shape ---- */
+  --shadow-soft:  0 1.1rem 2.6rem rgba(29, 85, 50, 0.12);  /* green-tinted   */
+  --radius-card:    1.25rem;   /* unchanged */
+  --radius-control: 1rem;      /* unchanged */
+
+  /* ---- Type ---- */
+  font-family:
+    'Hanken Grotesk', ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  color: var(--color-text);
+  background: var(--color-background);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Update the body gradient (currently blue/cream) to the warm-green wash */
+body {
+  background:
+    linear-gradient(180deg, rgba(241, 247, 242, 0.98), rgba(241, 239, 230, 0.96)),
+    var(--color-background);
+}
+
+/* =====================================================================
+   App.css — hardcoded values to replace (search & replace)
+   ---------------------------------------------------------------------
+   These spots use literal hex/rgba instead of variables.
+
+   A) Blue button shadows  → green
+      FIND  rgba(47, 111, 158, 0.09)   REPLACE rgba(29, 85, 50, 0.09)
+      FIND  rgba(47, 111, 158, 0.14)   REPLACE rgba(29, 85, 50, 0.14)
+      FIND  rgba(47, 111, 158, 0.12)   REPLACE rgba(29, 85, 50, 0.12)
+      FIND  rgba(47, 111, 158, 0.07)   REPLACE rgba(29, 85, 50, 0.07)
+      FIND  rgba(77, 137, 184, 0.18)   REPLACE rgba(46, 122, 72, 0.18)   (input focus ring)
+
+   B) .primary-action  color: #1f241d;  → color: #3c2c05;  (dark text on gold)
+
+   C) .urgent-note  (harsh-orange → calm terracotta)
+      background: #fff4ed  → #fbece2
+      border:     #edcdb8  → #ecd0c0
+      color:      #6d3d2d  → #6f3320
+
+   D) .evidence-pill  (orange → gold)
+      background: #fff4ed  → #fcefce
+      color:      #7a3d2b  → #8a5f0c
+
+   E) .delete-button  (keep a gentle "remove" terracotta — already fine,
+      or align to:)
+      background: #fff4ed  → #fbece2
+      color:      #7a3d2b  → #7a3d24
+      border:     #edcdb8  → #ecd0c0
+   ===================================================================== */
