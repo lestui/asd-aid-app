@@ -47,7 +47,8 @@ function SavedStrategiesScreen({ savedStrategies, onBack, onDelete }) {
       )}
 
       <p className="privacy-note">
-        Saved profiles and strategies stay on this device only.
+        Saved strategies stay on this device only. Anyone using the same browser
+        or device profile may be able to see saved data.
       </p>
     </div>
   )

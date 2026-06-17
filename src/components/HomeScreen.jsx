@@ -11,6 +11,10 @@ const situationHints = {
 
 const quickActions = [
   ['Child profile', 'Keep child-specific details handy.', 'profile'],
+  ['Daily check-in', "Set today's regulation baseline.", 'daily'],
+  ['Emergency profile', 'Keep distress support notes ready.', 'emergency'],
+  ['Carer handover', 'Generate a short note for today.', 'handover'],
+  ['Safe foods', 'Keep exact food and substitute notes ready.', 'safeFoods'],
   ['Saved strategies', 'Return to support plans that helped.', 'saved'],
   ['Evidence-informed supports', 'Browse searchable support cards.', 'evidence'],
   ['Body regulation & boundaries', 'Body checks, privacy, and safe scripts.', 'body'],
@@ -25,15 +29,23 @@ function HomeScreen({
   situations,
   onChooseSituation,
   onOpenBodyRegulation,
+  onOpenCarerHandover,
+  onOpenDailyCheckIn,
   onOpenEvidenceSupports,
+  onOpenEmergencyProfile,
   onOpenFurtherReading,
   onOpenGuideArea,
   onOpenProfile,
+  onOpenSafeFoods,
   onOpenSavedStrategies,
   onOpenToiletingSupport,
 }) {
   const actionHandlers = {
     profile: onOpenProfile,
+    daily: onOpenDailyCheckIn,
+    emergency: onOpenEmergencyProfile,
+    handover: onOpenCarerHandover,
+    safeFoods: onOpenSafeFoods,
     saved: onOpenSavedStrategies,
     evidence: onOpenEvidenceSupports,
     body: onOpenBodyRegulation,
@@ -50,7 +62,7 @@ function HomeScreen({
           and practical next steps.
         </p>
       </div>
-      <div className="button-list" role="list">
+      <div className="button-list">
         {situations.map((situation) => (
           <button
             className={
@@ -103,7 +115,9 @@ function HomeScreen({
       </section>
 
       <p className="privacy-note">
-        Saved profiles and strategies stay on this device only.
+        Child profile, saved strategies, daily check-ins, emergency profile,
+        handover notes, and safe foods stay on this device only. Anyone using
+        the same browser or device profile may be able to see saved data.
       </p>
 
       <section className="helper-card-section" aria-labelledby="helper-card-title">

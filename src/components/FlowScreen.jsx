@@ -8,7 +8,7 @@ function FlowScreen({ currentStep, flow, step, onBack, onChooseAnswer }) {
         Step {currentStep + 1} of {flow.steps.length}
       </p>
       <h2>{step.question}</h2>
-      <div className="button-list" role="list">
+      <div className="button-list">
         {step.options.map((option) => (
           <button
             className="decision-button"
