@@ -147,3 +147,251 @@ Suggested commit messages:
 - Avoid puzzle-piece language or imagery.
 - Keep adult actions practical: reduce demands, check body needs, offer communication supports, protect safety, respect privacy, and repair without shame.
 - Keep wording suitable for parents, teachers, carers, aides, and support workers.
+
+---
+
+## High-Utility Parent & NZ Whānau Support Features
+
+### Product Direction
+
+The app should combine universal autism caregiver tools with NZ-specific whānau support workflows. The goal is to help parents communicate needs clearly, reduce repeated explanations, track daily regulation capacity, and organise support information across home, school, carers, and services.
+
+---
+
+## Phase 1: MVP Features
+
+### 1. Child Profile
+
+**Goal:** Create one central profile that powers the rest of the app.
+
+**Fields:**
+- Child name
+- Age
+- Communication style
+- Sensory needs
+- Top triggers
+- Soothing tools
+- Safe foods
+- Emergency contacts
+- School/kindy notes
+- Carer notes
+
+---
+
+### 2. Daily Baseline Tracker
+
+**Goal:** Let parents quickly record and share their child’s current daily capacity.
+
+**Status Options:**
+- Green Day: regulated / normal capacity
+- Yellow Day: reduced capacity / needs extra support
+- Red Day: low capacity / reduce demands and sensory load
+
+**MVP Features:**
+- 3-button daily status selector
+- Optional notes
+- Save daily history locally
+- Share today’s status by text/email
+
+**Example Output:**
+
+Today is a Yellow Day. Please reduce demands, use calm transitions, and avoid loud environments where possible.
+
+---
+
+### 3. One-Touch De-escalation Profile
+
+**Goal:** Give carers, teachers, relatives, or emergency helpers clear guidance during distress, shutdown, or meltdown situations.
+
+**Fields:**
+- Top triggers
+- Early warning signs
+- What helps
+- What makes things worse
+- Communication style
+- Sensory tools
+- Safe place
+- Emergency contacts
+
+**MVP Features:**
+- Editable profile
+- Share button
+- Screenshot/print-friendly card
+
+---
+
+### 4. Carer Handover Dashboard
+
+**Goal:** Generate a short mobile-friendly handover for relatives, babysitters, support workers, teachers, or SESTA-style transport situations.
+
+**MVP Features:**
+- Pull today’s Daily Baseline status
+- Pull key de-escalation notes
+- Allow parent to add a short handover note
+- Generate a simple shareable message
+
+**Example Output:**
+
+Today is a Yellow Day.
+
+Please use calm, short instructions.
+Avoid sudden transitions.
+If he becomes anxious, give him his soft plush blanket and reduce talking.
+Do not force eye contact.
+Allow 10 seconds processing time before repeating instructions.
+
+---
+
+### 5. Safe Food & Ingredient Log
+
+**Goal:** Help parents manage food selectivity and avoid accidental unsafe substitutions.
+
+**Fields:**
+- Food name
+- Brand
+- Product photo
+- Packaging photo
+- Store
+- Accepted preparation method
+- Safe substitutes
+- Unsafe substitutes
+- Texture/smell/temperature/shape notes
+
+**MVP Features:**
+- Manual safe food entries
+- Add product photos
+- Add substitute notes
+- Share safe food list
+
+**Later Features:**
+- Barcode scanner
+- Ingredient change notes
+- Store-specific grocery list
+- Emergency safe food mode
+
+---
+
+### 6. Micro-Handout Guide for Relatives
+
+**Goal:** Reduce the emotional load of repeatedly explaining autism basics to extended family and visitors.
+
+**MVP Features:**
+- Editable "How to Interact with Me" template
+- Copy/share button
+- Save versions for different situations
+
+**Template Sections:**
+- Please do
+- Please do not
+- Helpful reminders
+- Safe foods
+- Transition tips
+- Comfort items
+
+---
+
+### 7. Support Notes / Communication Log
+
+**Goal:** Keep school, therapy, MoE, Autism NZ course, GP, and home observations in one place.
+
+**Fields:**
+- Date
+- Person/service
+- Note type:
+  - School
+  - OT
+  - SLT
+  - MoE
+  - Autism NZ
+  - GP
+  - Home observation
+  - Other
+- What was discussed
+- Strategy being tried
+- What school/carers should know
+- Follow-up required
+
+**MVP Features:**
+- Add support note
+- Filter by type
+- Export/share selected notes
+- Keep a simple timeline
+
+**Later Features:**
+- External party login
+- Shared strategy board
+- Permissions by role
+- Attach documents/reports
+
+---
+
+## Phase 2: NZ-Specific Support Tools
+
+### 8. Funding & Support Tracker
+
+**Goal:** Help NZ whānau organise Carer Support, Individualised Funding, support hours, receipts, and reimbursement status.
+
+**Important Positioning:**
+
+This should be an organisation tool, not an official claims or entitlement calculator.
+
+**Fields:**
+- Funding type:
+  - Carer Support
+  - Individualised Funding
+  - Other
+- Allocation amount/days/hours
+- Used amount/days/hours
+- Remaining amount/days/hours
+- Receipt photo
+- Claim note
+- Reimbursement status:
+  - Not claimed
+  - Submitted
+  - Paid
+  - Rejected / needs follow-up
+
+**In-App Disclaimer:**
+
+This tracker helps you organise your support records. It does not replace advice from Whaikaha, your NASC, funding host, school, or support coordinator.
+
+**Later Features:**
+- Funding host templates
+- Claim packet export
+- Receipt folder
+- Reminder dates
+- CSV/PDF export
+
+---
+
+## Suggested Build Priority
+
+1. Child Profile
+2. Daily Baseline Tracker
+3. One-Touch De-escalation Profile
+4. Carer Handover Dashboard
+5. Safe Food Log
+6. Micro-Handout Guide
+7. Support Notes / Communication Log
+8. Funding & Support Tracker
+
+---
+
+## Suggested App Screen Names
+
+Use parent-friendly names in the app:
+
+- Daily Check-In
+- Emergency Profile
+- Carer Handover
+- Safe Foods
+- Family Guide
+- Support Notes
+- Funding Tracker
+
+Avoid making the main app buttons sound like government portals:
+
+- Whaikaha Claims
+- NASC Ledger
+- MoE Specialist Portal
+- SESTA Dashboard
