@@ -16,6 +16,19 @@ const statusOptions = [
   },
 ]
 
+const sleepQualityOptions = ['Good', 'Okay', 'Poor']
+const nightWakingOptions = ['No', 'Yes']
+const wakeMoodOptions = ['Calm', 'Tired', 'Wired', 'Upset / dysregulated']
+
+function hasSleepSummary(checkIn) {
+  return (
+    checkIn.sleepQuality ||
+    checkIn.nightWaking ||
+    checkIn.wakeMood ||
+    checkIn.sleepNote
+  )
+}
+
 function DailyCheckInScreen({ checkIn, savedMessage, onBack, onChange, onSave }) {
   const selectedStatus = statusOptions.find(
     (option) => option.value === checkIn.status,
@@ -36,16 +49,32 @@ function DailyCheckInScreen({ checkIn, savedMessage, onBack, onChange, onSave })
       </div>
 
       <p className="privacy-note">
-        Daily check-ins are saved only on this device. The app does not send
-        this information to a server. Anyone using the same browser or device
-        profile may be able to see saved data. Avoid entering details you would
-        not want stored in this browser.
+        Saved on this device/browser only. Anyone using the same browser profile
+        may be able to see it.
+      </p>
+
+      <p className="privacy-note">
+        Sleep information is for caregiver planning and does not replace medical
+        advice.
       </p>
 
       {selectedStatus && (
         <section className="status-summary" aria-label="Today's saved status">
           <strong>Today: {selectedStatus.label}</strong>
           <span>{selectedStatus.description}</span>
+        </section>
+      )}
+
+      {hasSleepSummary(checkIn) && (
+        <section className="status-summary" aria-label="Today's sleep summary">
+          <strong>
+            Sleep: {checkIn.sleepQuality || 'Not set'}
+            {checkIn.nightWaking
+              ? `, night waking: ${checkIn.nightWaking}`
+              : ''}
+            {checkIn.wakeMood ? `, wake-up mood: ${checkIn.wakeMood}` : ''}.
+          </strong>
+          {checkIn.sleepNote && <span>{checkIn.sleepNote}</span>}
         </section>
       )}
 
@@ -77,6 +106,98 @@ function DailyCheckInScreen({ checkIn, savedMessage, onBack, onChange, onSave })
             ))}
           </div>
         </fieldset>
+
+        <fieldset className="profile-checkbox-group">
+          <legend>Sleep quality</legend>
+          <div className="status-grid">
+            {sleepQualityOptions.map((option) => (
+              <label
+                className={
+                  checkIn.sleepQuality === option
+                    ? 'status-option selected'
+                    : 'status-option'
+                }
+                key={option}
+              >
+                <input
+                  checked={checkIn.sleepQuality === option}
+                  name="sleep-quality"
+                  type="radio"
+                  value={option}
+                  onChange={(event) =>
+                    onChange('sleepQuality', event.target.value)
+                  }
+                />
+                <span>
+                  <strong>{option}</strong>
+                </span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset className="profile-checkbox-group">
+          <legend>Night waking</legend>
+          <div className="status-grid">
+            {nightWakingOptions.map((option) => (
+              <label
+                className={
+                  checkIn.nightWaking === option
+                    ? 'status-option selected'
+                    : 'status-option'
+                }
+                key={option}
+              >
+                <input
+                  checked={checkIn.nightWaking === option}
+                  name="night-waking"
+                  type="radio"
+                  value={option}
+                  onChange={(event) => onChange('nightWaking', event.target.value)}
+                />
+                <span>
+                  <strong>{option}</strong>
+                </span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset className="profile-checkbox-group">
+          <legend>Wake-up mood</legend>
+          <div className="status-grid">
+            {wakeMoodOptions.map((option) => (
+              <label
+                className={
+                  checkIn.wakeMood === option
+                    ? 'status-option selected'
+                    : 'status-option'
+                }
+                key={option}
+              >
+                <input
+                  checked={checkIn.wakeMood === option}
+                  name="wake-mood"
+                  type="radio"
+                  value={option}
+                  onChange={(event) => onChange('wakeMood', event.target.value)}
+                />
+                <span>
+                  <strong>{option}</strong>
+                </span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <label className="profile-field">
+          <span>Sleep note / regulation note</span>
+          <textarea
+            rows="4"
+            value={checkIn.sleepNote}
+            onChange={(event) => onChange('sleepNote', event.target.value)}
+          />
+        </label>
 
         <label className="profile-field">
           <span>Optional daily note</span>

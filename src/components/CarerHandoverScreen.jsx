@@ -30,6 +30,22 @@ function buildHandoverMessage({
     lines.push(`Today's note: ${dailyCheckIn.note}`)
   }
 
+  if (
+    dailyCheckIn.sleepQuality ||
+    dailyCheckIn.nightWaking ||
+    dailyCheckIn.wakeMood
+  ) {
+    lines.push(
+      `Sleep: ${dailyCheckIn.sleepQuality || 'Not set'}, night waking: ${
+        dailyCheckIn.nightWaking || 'Not set'
+      }, wake-up mood: ${dailyCheckIn.wakeMood || 'Not set'}.`,
+    )
+  }
+
+  if (dailyCheckIn.sleepNote) {
+    lines.push(`Sleep/regulation note: ${dailyCheckIn.sleepNote}`)
+  }
+
   if (handoverNote) {
     lines.push(`Handover note: ${handoverNote}`)
   }

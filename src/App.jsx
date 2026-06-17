@@ -44,7 +44,11 @@ const emptyProfile = {
 
 const emptyDailyCheckIn = {
   status: '',
+  sleepQuality: '',
+  nightWaking: '',
+  wakeMood: '',
   note: '',
+  sleepNote: '',
   date: '',
   savedAt: '',
 }
@@ -161,9 +165,12 @@ function normalizeDailyCheckIns(storedCheckIns) {
     return []
   }
 
-  return storedCheckIns.filter(
-    (checkIn) => checkIn && typeof checkIn === 'object' && checkIn.date,
-  )
+  return storedCheckIns
+    .filter((checkIn) => checkIn && typeof checkIn === 'object' && checkIn.date)
+    .map((checkIn) => ({
+      ...emptyDailyCheckIn,
+      ...checkIn,
+    }))
 }
 
 function normalizeEmergencyProfile(storedProfile) {
