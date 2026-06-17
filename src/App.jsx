@@ -10,6 +10,7 @@ import FurtherReadingScreen from './components/FurtherReadingScreen.jsx'
 import GuideAreaScreen from './components/GuideAreaScreen.jsx'
 import HomeScreen from './components/HomeScreen.jsx'
 import ResultScreen from './components/ResultScreen.jsx'
+import SafeFoodsScreen from './components/SafeFoodsScreen.jsx'
 import SavedStrategiesScreen from './components/SavedStrategiesScreen.jsx'
 import ToiletingSupportScreen from './components/ToiletingSupportScreen.jsx'
 import { flows, situations } from './data/flows.js'
@@ -20,6 +21,7 @@ const STRATEGIES_STORAGE_KEY = 'asd-aid-saved-strategies'
 const DAILY_CHECKIN_STORAGE_KEY = 'asd-aid-daily-checkins'
 const EMERGENCY_PROFILE_STORAGE_KEY = 'asd-aid-emergency-profile'
 const HANDOVER_NOTE_STORAGE_KEY = 'asd-aid-carer-handover-note'
+const SAFE_FOODS_STORAGE_KEY = 'asd-aid-safe-foods'
 
 const emptyProfile = {
   nickname: '',
@@ -56,6 +58,32 @@ const emptyEmergencyProfile = {
   sensoryTools: '',
   safePlace: '',
   emergencyContacts: '',
+  savedAt: '',
+}
+
+const safeFoodFields = [
+  'foodName',
+  'brand',
+  'store',
+  'packagingNotes',
+  'prepMethod',
+  'safeSubstitutes',
+  'unsafeSubstitutes',
+  'sensoryNotes',
+  'caregiverNotes',
+]
+
+const emptySafeFood = {
+  id: '',
+  foodName: '',
+  brand: '',
+  store: '',
+  packagingNotes: '',
+  prepMethod: '',
+  safeSubstitutes: '',
+  unsafeSubstitutes: '',
+  sensoryNotes: '',
+  caregiverNotes: '',
   savedAt: '',
 }
 
@@ -145,6 +173,35 @@ function normalizeEmergencyProfile(storedProfile) {
   }
 }
 
+function normalizeSafeFoods(storedSafeFoods) {
+  if (!Array.isArray(storedSafeFoods)) {
+    return []
+  }
+
+  return storedSafeFoods
+    .filter((safeFood) => safeFood && typeof safeFood === 'object')
+    .map((safeFood) => {
+      const normalizedSafeFood = {
+        ...emptySafeFood,
+        id:
+          typeof safeFood.id === 'string' && safeFood.id
+            ? safeFood.id
+            : createLocalId('safe-food'),
+        savedAt: typeof safeFood.savedAt === 'string' ? safeFood.savedAt : '',
+      }
+
+      safeFoodFields.forEach((field) => {
+        normalizedSafeFood[field] =
+          typeof safeFood[field] === 'string' ? safeFood[field] : ''
+      })
+
+      return normalizedSafeFood
+    })
+    .filter((safeFood) =>
+      safeFoodFields.some((field) => safeFood[field].trim()),
+    )
+}
+
 function normalizeStoredString(storedValue) {
   return typeof storedValue === 'string' ? storedValue : ''
 }
@@ -197,12 +254,16 @@ function sortNewestFirst(strategies) {
   )
 }
 
+function createLocalId(prefix) {
+  return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
+}
+
 function createStrategyId() {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
     return crypto.randomUUID()
   }
 
-  return `strategy-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
+  return createLocalId('strategy')
 }
 
 function App() {
@@ -215,12 +276,16 @@ function App() {
   const [dailyCheckIns, setDailyCheckIns] = useState([])
   const [emergencyProfile, setEmergencyProfile] = useState(emptyEmergencyProfile)
   const [handoverNote, setHandoverNote] = useState('')
+  const [safeFoods, setSafeFoods] = useState([])
+  const [safeFoodDraft, setSafeFoodDraft] = useState(emptySafeFood)
+  const [editingSafeFoodId, setEditingSafeFoodId] = useState('')
   const [profileSavedMessage, setProfileSavedMessage] = useState('')
   const [strategySavedMessage, setStrategySavedMessage] = useState('')
   const [dailyCheckInSavedMessage, setDailyCheckInSavedMessage] = useState('')
   const [emergencyProfileSavedMessage, setEmergencyProfileSavedMessage] =
     useState('')
   const [handoverSavedMessage, setHandoverSavedMessage] = useState('')
+  const [safeFoodsSavedMessage, setSafeFoodsSavedMessage] = useState('')
   const [activeGuideAreaId, setActiveGuideAreaId] = useState('')
 
   const activeFlow = flows[activeFlowKey]
@@ -250,6 +315,9 @@ function App() {
     setHandoverNote(
       normalizeStoredString(loadStoredValue(HANDOVER_NOTE_STORAGE_KEY, '')),
     )
+    setSafeFoods(
+      normalizeSafeFoods(loadStoredValue(SAFE_FOODS_STORAGE_KEY, [])),
+    )
   }, [])
 
   function returnHome() {
@@ -263,6 +331,7 @@ function App() {
     setDailyCheckInSavedMessage('')
     setEmergencyProfileSavedMessage('')
     setHandoverSavedMessage('')
+    setSafeFoodsSavedMessage('')
   }
 
   function openProfile() {
@@ -288,6 +357,11 @@ function App() {
   function openCarerHandover() {
     setCurrentView('carerHandover')
     setHandoverSavedMessage('')
+  }
+
+  function openSafeFoods() {
+    setCurrentView('safeFoods')
+    setSafeFoodsSavedMessage('')
   }
 
   function openEvidenceSupports() {
@@ -443,6 +517,79 @@ function App() {
     )
   }
 
+  function updateSafeFoodField(field, value) {
+    setSafeFoodDraft((currentDraft) => ({
+      ...currentDraft,
+      [field]: value,
+    }))
+    setSafeFoodsSavedMessage('')
+  }
+
+  function resetSafeFoodForm() {
+    setSafeFoodDraft(emptySafeFood)
+    setEditingSafeFoodId('')
+    setSafeFoodsSavedMessage('')
+  }
+
+  function saveSafeFood(event) {
+    event.preventDefault()
+
+    if (!safeFoodFields.some((field) => safeFoodDraft[field].trim())) {
+      setSafeFoodsSavedMessage('Add at least one safe food detail before saving.')
+      return
+    }
+
+    const savedAt = new Date().toISOString()
+    const safeFoodToSave = {
+      ...emptySafeFood,
+      ...safeFoodDraft,
+      id: editingSafeFoodId || createLocalId('safe-food'),
+      savedAt,
+    }
+    const updatedSafeFoods = editingSafeFoodId
+      ? safeFoods.map((safeFood) =>
+          safeFood.id === editingSafeFoodId ? safeFoodToSave : safeFood,
+        )
+      : [safeFoodToSave, ...safeFoods]
+
+    if (saveStoredValue(SAFE_FOODS_STORAGE_KEY, updatedSafeFoods)) {
+      setSafeFoods(updatedSafeFoods)
+      setSafeFoodDraft(emptySafeFood)
+      setEditingSafeFoodId('')
+      setSafeFoodsSavedMessage('Safe food saved on this device.')
+      return
+    }
+
+    setSafeFoodsSavedMessage('Safe food could not be saved in this browser.')
+  }
+
+  function editSafeFood(safeFoodId) {
+    const safeFoodToEdit = safeFoods.find((safeFood) => safeFood.id === safeFoodId)
+    if (!safeFoodToEdit) {
+      return
+    }
+
+    setSafeFoodDraft(safeFoodToEdit)
+    setEditingSafeFoodId(safeFoodId)
+    setSafeFoodsSavedMessage('Editing saved safe food.')
+  }
+
+  function deleteSafeFood(safeFoodId) {
+    const updatedSafeFoods = safeFoods.filter((safeFood) => safeFood.id !== safeFoodId)
+
+    if (saveStoredValue(SAFE_FOODS_STORAGE_KEY, updatedSafeFoods)) {
+      setSafeFoods(updatedSafeFoods)
+      if (editingSafeFoodId === safeFoodId) {
+        setSafeFoodDraft(emptySafeFood)
+        setEditingSafeFoodId('')
+      }
+      setSafeFoodsSavedMessage('Safe food deleted.')
+      return
+    }
+
+    setSafeFoodsSavedMessage('Safe food could not be deleted in this browser.')
+  }
+
   function saveCurrentStrategy() {
     if (!activeFlow) {
       return
@@ -517,6 +664,7 @@ function App() {
             onOpenFurtherReading={openFurtherReading}
             onOpenGuideArea={openGuideArea}
             onOpenProfile={openProfile}
+            onOpenSafeFoods={openSafeFoods}
             onOpenSavedStrategies={openSavedStrategies}
             onOpenToiletingSupport={openToiletingSupport}
           />
@@ -594,6 +742,21 @@ function App() {
             onBack={returnHome}
             onChangeNote={updateHandoverNote}
             onSaveNote={saveHandoverNote}
+          />
+        )}
+
+        {currentView === 'safeFoods' && (
+          <SafeFoodsScreen
+            draft={safeFoodDraft}
+            editingSafeFoodId={editingSafeFoodId}
+            safeFoods={safeFoods}
+            savedMessage={safeFoodsSavedMessage}
+            onBack={returnHome}
+            onCancelEdit={resetSafeFoodForm}
+            onChange={updateSafeFoodField}
+            onDelete={deleteSafeFood}
+            onEdit={editSafeFood}
+            onSave={saveSafeFood}
           />
         )}
 
