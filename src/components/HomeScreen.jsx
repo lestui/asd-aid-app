@@ -59,7 +59,7 @@ function HomeScreen({
           and practical next steps.
         </p>
       </div>
-      <div className="button-list" role="list">
+      <div className="button-list">
         {situations.map((situation) => (
           <button
             className={
@@ -112,7 +112,9 @@ function HomeScreen({
       </section>
 
       <p className="privacy-note">
-        Saved profiles and strategies stay on this device only.
+        Child profile, saved strategies, daily check-ins, emergency profile,
+        and handover notes stay on this device only. Anyone using the same
+        browser or device profile may be able to see saved data.
       </p>
 
       <section className="helper-card-section" aria-labelledby="helper-card-title">

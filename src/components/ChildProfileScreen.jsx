@@ -139,8 +139,9 @@ function ChildProfileScreen({
 
       <p className="privacy-note">
         Child profile details are saved only on this device. The app does not
-        require a login and does not send this information to a server. Avoid
-        entering anything you would not want stored in this browser.
+        require a login and does not send this information to a server. Anyone
+        using the same browser or device profile may be able to see saved data.
+        Avoid entering anything you would not want stored in this browser.
       </p>
 
       <form className="profile-form" onSubmit={onSave}>

@@ -149,6 +149,42 @@ function normalizeStoredString(storedValue) {
   return typeof storedValue === 'string' ? storedValue : ''
 }
 
+function normalizeSavedStrategies(storedStrategies) {
+  if (!Array.isArray(storedStrategies)) {
+    return []
+  }
+
+  return storedStrategies
+    .filter((strategy) => strategy && typeof strategy === 'object')
+    .map((strategy) => ({
+      ...strategy,
+      answers: Array.isArray(strategy.answers)
+        ? strategy.answers
+            .filter((answer) => answer && typeof answer === 'object')
+            .map((answer) => ({
+              question: answer.question ?? '',
+              answer: answer.answer ?? '',
+            }))
+        : [],
+      resultSections: Array.isArray(strategy.resultSections)
+        ? strategy.resultSections
+            .filter((section) => section && typeof section === 'object')
+            .map((section) => ({
+              ...section,
+              title: section.title ?? '',
+            }))
+        : [],
+    }))
+    .filter(
+      (strategy) =>
+        strategy.id ||
+        strategy.flowTitle ||
+        strategy.savedAt ||
+        strategy.answers.length > 0 ||
+        strategy.resultSections.length > 0,
+    )
+}
+
 function sortNewestFirst(strategies) {
   if (!Array.isArray(strategies)) {
     return []
@@ -159,6 +195,14 @@ function sortNewestFirst(strategies) {
       new Date(secondStrategy.savedAt).getTime() -
       new Date(firstStrategy.savedAt).getTime(),
   )
+}
+
+function createStrategyId() {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID()
+  }
+
+  return `strategy-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
 }
 
 function App() {
@@ -190,7 +234,11 @@ function App() {
 
   useEffect(() => {
     setProfile(normalizeProfile(loadStoredValue(PROFILE_STORAGE_KEY, emptyProfile)))
-    setSavedStrategies(sortNewestFirst(loadStoredValue(STRATEGIES_STORAGE_KEY, [])))
+    setSavedStrategies(
+      sortNewestFirst(
+        normalizeSavedStrategies(loadStoredValue(STRATEGIES_STORAGE_KEY, [])),
+      ),
+    )
     setDailyCheckIns(
       normalizeDailyCheckIns(loadStoredValue(DAILY_CHECKIN_STORAGE_KEY, [])),
     )
@@ -401,7 +449,7 @@ function App() {
     }
 
     const strategy = {
-      id: crypto.randomUUID(),
+      id: createStrategyId(),
       flowTitle: activeFlow.title,
       savedAt: new Date().toISOString(),
       answers: activeFlow.steps.map((step) => ({

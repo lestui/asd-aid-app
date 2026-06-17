@@ -32,12 +32,14 @@ function EmergencyProfileScreen({
 
       <p className="urgent-note">
         This is not a medical record or emergency service. If anyone is in
-        immediate danger, seek urgent local help.
+        immediate danger, call local emergency services now.
       </p>
 
       <p className="privacy-note">
         Emergency profile details are saved only on this device. The app does
         not require a login and does not send this information to a server.
+        Anyone using the same browser or device profile may be able to see saved
+        data.
       </p>
 
       <form className="profile-form" onSubmit={onSave}>

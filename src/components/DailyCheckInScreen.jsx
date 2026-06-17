@@ -37,8 +37,9 @@ function DailyCheckInScreen({ checkIn, savedMessage, onBack, onChange, onSave })
 
       <p className="privacy-note">
         Daily check-ins are saved only on this device. The app does not send
-        this information to a server. Avoid entering details you would not want
-        stored in this browser.
+        this information to a server. Anyone using the same browser or device
+        profile may be able to see saved data. Avoid entering details you would
+        not want stored in this browser.
       </p>
 
       {selectedStatus && (

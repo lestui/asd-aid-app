@@ -108,7 +108,8 @@ function CarerHandoverScreen({
 
       <p className="privacy-note">
         Handover information is generated in this browser from details saved on
-        this device. Check the message before copying it to anyone else.
+        this device. Anyone using the same browser or device profile may be able
+        to see saved data. Check the message before copying it to anyone else.
       </p>
 
       <label className="profile-field">
