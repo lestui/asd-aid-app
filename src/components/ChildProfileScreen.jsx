@@ -188,7 +188,61 @@ function ChildProfileScreen({
         ))}
 
         <label className="profile-field">
-          <span>Caregiver notes</span>
+          <span>Safe foods</span>
+          <textarea
+            rows="3"
+            value={profile.safeFoods}
+            onChange={(event) => onChange('safeFoods', event.target.value)}
+          />
+        </label>
+
+        <label className="profile-field">
+          <span>Emergency contacts</span>
+          <textarea
+            rows="3"
+            value={profile.emergencyContacts}
+            onChange={(event) => onChange('emergencyContacts', event.target.value)}
+          />
+        </label>
+
+        <label className="profile-field">
+          <span>School/kindy notes</span>
+          <textarea
+            rows="3"
+            value={profile.schoolKindyNotes}
+            onChange={(event) => onChange('schoolKindyNotes', event.target.value)}
+          />
+        </label>
+
+        <label className="profile-field">
+          <span>Carer notes</span>
+          <textarea
+            rows="3"
+            value={profile.carerNotes}
+            onChange={(event) => onChange('carerNotes', event.target.value)}
+          />
+        </label>
+
+        <label className="profile-field">
+          <span>Top triggers</span>
+          <textarea
+            rows="3"
+            value={profile.topTriggers}
+            onChange={(event) => onChange('topTriggers', event.target.value)}
+          />
+        </label>
+
+        <label className="profile-field">
+          <span>Soothing tools</span>
+          <textarea
+            rows="3"
+            value={profile.soothingTools}
+            onChange={(event) => onChange('soothingTools', event.target.value)}
+          />
+        </label>
+
+        <label className="profile-field">
+          <span>General caregiver notes</span>
           <textarea
             rows="4"
             value={profile.caregiverNotes}

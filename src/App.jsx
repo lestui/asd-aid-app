@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
 import BodyRegulationScreen from './components/BodyRegulationScreen.jsx'
+import CarerHandoverScreen from './components/CarerHandoverScreen.jsx'
 import ChildProfileScreen from './components/ChildProfileScreen.jsx'
+import DailyCheckInScreen from './components/DailyCheckInScreen.jsx'
+import EmergencyProfileScreen from './components/EmergencyProfileScreen.jsx'
 import EvidenceSupportScreen from './components/EvidenceSupportScreen.jsx'
 import FlowScreen from './components/FlowScreen.jsx'
 import FurtherReadingScreen from './components/FurtherReadingScreen.jsx'
@@ -14,6 +17,9 @@ import './App.css'
 
 const PROFILE_STORAGE_KEY = 'asd-aid-child-profile'
 const STRATEGIES_STORAGE_KEY = 'asd-aid-saved-strategies'
+const DAILY_CHECKIN_STORAGE_KEY = 'asd-aid-daily-checkins'
+const EMERGENCY_PROFILE_STORAGE_KEY = 'asd-aid-emergency-profile'
+const HANDOVER_NOTE_STORAGE_KEY = 'asd-aid-carer-handover-note'
 
 const emptyProfile = {
   nickname: '',
@@ -21,11 +27,36 @@ const emptyProfile = {
   communicationStyle: [],
   sensoryTriggers: [],
   calmingSupports: [],
+  safeFoods: '',
+  emergencyContacts: '',
+  schoolKindyNotes: '',
+  carerNotes: '',
+  topTriggers: '',
+  soothingTools: '',
   difficultRoutines: [],
   toiletingConcerns: [],
   schoolChallenges: [],
   safetyConcerns: [],
   caregiverNotes: '',
+}
+
+const emptyDailyCheckIn = {
+  status: '',
+  note: '',
+  date: '',
+  savedAt: '',
+}
+
+const emptyEmergencyProfile = {
+  topTriggers: '',
+  earlyWarningSigns: '',
+  whatHelps: '',
+  whatMakesWorse: '',
+  communicationStyle: '',
+  sensoryTools: '',
+  safePlace: '',
+  emergencyContacts: '',
+  savedAt: '',
 }
 
 function normalizeProfile(storedProfile) {
@@ -56,6 +87,18 @@ function normalizeProfile(storedProfile) {
       .join('\n')
   }
 
+  if (!mergedProfile.topTriggers && storedProfile?.triggers) {
+    mergedProfile.topTriggers = storedProfile.triggers
+  }
+
+  if (!mergedProfile.soothingTools && storedProfile?.calmingTools) {
+    mergedProfile.soothingTools = storedProfile.calmingTools
+  }
+
+  if (!mergedProfile.schoolKindyNotes && storedProfile?.schoolNotes) {
+    mergedProfile.schoolKindyNotes = storedProfile.schoolNotes
+  }
+
   return mergedProfile
 }
 
@@ -66,6 +109,44 @@ function loadStoredValue(key, fallback) {
   } catch {
     return fallback
   }
+}
+
+function saveStoredValue(key, value) {
+  try {
+    window.localStorage.setItem(key, JSON.stringify(value))
+    return true
+  } catch {
+    return false
+  }
+}
+
+function getTodayKey() {
+  const today = new Date()
+  const year = today.getFullYear()
+  const month = String(today.getMonth() + 1).padStart(2, '0')
+  const day = String(today.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+function normalizeDailyCheckIns(storedCheckIns) {
+  if (!Array.isArray(storedCheckIns)) {
+    return []
+  }
+
+  return storedCheckIns.filter(
+    (checkIn) => checkIn && typeof checkIn === 'object' && checkIn.date,
+  )
+}
+
+function normalizeEmergencyProfile(storedProfile) {
+  return {
+    ...emptyEmergencyProfile,
+    ...(storedProfile && typeof storedProfile === 'object' ? storedProfile : {}),
+  }
+}
+
+function normalizeStoredString(storedValue) {
+  return typeof storedValue === 'string' ? storedValue : ''
 }
 
 function sortNewestFirst(strategies) {
@@ -87,8 +168,15 @@ function App() {
   const [activeFlowKey, setActiveFlowKey] = useState('')
   const [profile, setProfile] = useState(emptyProfile)
   const [savedStrategies, setSavedStrategies] = useState([])
+  const [dailyCheckIns, setDailyCheckIns] = useState([])
+  const [emergencyProfile, setEmergencyProfile] = useState(emptyEmergencyProfile)
+  const [handoverNote, setHandoverNote] = useState('')
   const [profileSavedMessage, setProfileSavedMessage] = useState('')
   const [strategySavedMessage, setStrategySavedMessage] = useState('')
+  const [dailyCheckInSavedMessage, setDailyCheckInSavedMessage] = useState('')
+  const [emergencyProfileSavedMessage, setEmergencyProfileSavedMessage] =
+    useState('')
+  const [handoverSavedMessage, setHandoverSavedMessage] = useState('')
   const [activeGuideAreaId, setActiveGuideAreaId] = useState('')
 
   const activeFlow = flows[activeFlowKey]
@@ -103,6 +191,17 @@ function App() {
   useEffect(() => {
     setProfile(normalizeProfile(loadStoredValue(PROFILE_STORAGE_KEY, emptyProfile)))
     setSavedStrategies(sortNewestFirst(loadStoredValue(STRATEGIES_STORAGE_KEY, [])))
+    setDailyCheckIns(
+      normalizeDailyCheckIns(loadStoredValue(DAILY_CHECKIN_STORAGE_KEY, [])),
+    )
+    setEmergencyProfile(
+      normalizeEmergencyProfile(
+        loadStoredValue(EMERGENCY_PROFILE_STORAGE_KEY, emptyEmergencyProfile),
+      ),
+    )
+    setHandoverNote(
+      normalizeStoredString(loadStoredValue(HANDOVER_NOTE_STORAGE_KEY, '')),
+    )
   }, [])
 
   function returnHome() {
@@ -113,6 +212,9 @@ function App() {
     setActiveGuideAreaId('')
     setProfileSavedMessage('')
     setStrategySavedMessage('')
+    setDailyCheckInSavedMessage('')
+    setEmergencyProfileSavedMessage('')
+    setHandoverSavedMessage('')
   }
 
   function openProfile() {
@@ -123,6 +225,21 @@ function App() {
   function openSavedStrategies() {
     setCurrentView('savedStrategies')
     setStrategySavedMessage('')
+  }
+
+  function openDailyCheckIn() {
+    setCurrentView('dailyCheckIn')
+    setDailyCheckInSavedMessage('')
+  }
+
+  function openEmergencyProfile() {
+    setCurrentView('emergencyProfile')
+    setEmergencyProfileSavedMessage('')
+  }
+
+  function openCarerHandover() {
+    setCurrentView('carerHandover')
+    setHandoverSavedMessage('')
   }
 
   function openEvidenceSupports() {
@@ -180,8 +297,102 @@ function App() {
 
   function saveProfile(event) {
     event.preventDefault()
-    window.localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile))
-    setProfileSavedMessage('Profile saved on this device.')
+    const saved = saveStoredValue(PROFILE_STORAGE_KEY, profile)
+    setProfileSavedMessage(
+      saved
+        ? 'Profile saved on this device.'
+        : 'Profile could not be saved in this browser. You can still copy anything important before leaving this screen.',
+    )
+  }
+
+  function updateDailyCheckInField(field, value) {
+    const today = getTodayKey()
+    setDailyCheckIns((currentCheckIns) => {
+      const existingCheckIn = currentCheckIns.find(
+        (checkIn) => checkIn.date === today,
+      )
+      const nextCheckIn = {
+        ...emptyDailyCheckIn,
+        ...existingCheckIn,
+        date: today,
+        savedAt: existingCheckIn?.savedAt ?? '',
+        [field]: value,
+      }
+      const otherCheckIns = currentCheckIns.filter(
+        (checkIn) => checkIn.date !== today,
+      )
+      return [nextCheckIn, ...otherCheckIns]
+    })
+  }
+
+  function saveDailyCheckIn(event) {
+    event.preventDefault()
+    const today = getTodayKey()
+    const currentCheckIn =
+      dailyCheckIns.find((checkIn) => checkIn.date === today) ?? emptyDailyCheckIn
+    const nextCheckIn = {
+      ...emptyDailyCheckIn,
+      ...currentCheckIn,
+      date: today,
+      savedAt: new Date().toISOString(),
+    }
+    const updatedCheckIns = [
+      nextCheckIn,
+      ...dailyCheckIns.filter((checkIn) => checkIn.date !== today),
+    ]
+
+    if (saveStoredValue(DAILY_CHECKIN_STORAGE_KEY, updatedCheckIns)) {
+      setDailyCheckIns(updatedCheckIns)
+      setDailyCheckInSavedMessage("Today's check-in saved on this device.")
+      return
+    }
+
+    setDailyCheckInSavedMessage(
+      "Today's check-in could not be saved in this browser.",
+    )
+  }
+
+  function updateEmergencyProfileField(field, value) {
+    setEmergencyProfile((currentProfile) => ({
+      ...currentProfile,
+      [field]: value,
+    }))
+  }
+
+  function saveEmergencyProfile(event) {
+    event.preventDefault()
+    const updatedProfile = {
+      ...emergencyProfile,
+      savedAt: new Date().toISOString(),
+    }
+
+    if (saveStoredValue(EMERGENCY_PROFILE_STORAGE_KEY, updatedProfile)) {
+      setEmergencyProfile(updatedProfile)
+      setEmergencyProfileSavedMessage(
+        'Emergency profile saved on this device.',
+      )
+      return
+    }
+
+    setEmergencyProfileSavedMessage(
+      'Emergency profile could not be saved in this browser.',
+    )
+  }
+
+  function updateHandoverNote(value) {
+    setHandoverNote(value)
+    setHandoverSavedMessage('')
+  }
+
+  function saveHandoverNote() {
+    if (saveStoredValue(HANDOVER_NOTE_STORAGE_KEY, handoverNote)) {
+      setHandoverSavedMessage('Handover note saved on this device.')
+      return
+    }
+
+    setHandoverSavedMessage(
+      'Handover note could not be saved in this browser.',
+    )
   }
 
   function saveCurrentStrategy() {
@@ -200,15 +411,15 @@ function App() {
       resultSections: activeFlow.resultSections,
     }
 
-    setSavedStrategies((currentStrategies) => {
-      const updatedStrategies = [strategy, ...currentStrategies]
-      window.localStorage.setItem(
-        STRATEGIES_STORAGE_KEY,
-        JSON.stringify(updatedStrategies),
-      )
-      return updatedStrategies
-    })
-    setStrategySavedMessage('Strategy saved on this device.')
+    const updatedStrategies = [strategy, ...savedStrategies]
+
+    if (saveStoredValue(STRATEGIES_STORAGE_KEY, updatedStrategies)) {
+      setSavedStrategies(updatedStrategies)
+      setStrategySavedMessage('Strategy saved on this device.')
+      return
+    }
+
+    setStrategySavedMessage('Strategy could not be saved in this browser.')
   }
 
   function deleteSavedStrategy(strategyId) {
@@ -216,10 +427,12 @@ function App() {
       const updatedStrategies = currentStrategies.filter(
         (strategy) => strategy.id !== strategyId,
       )
-      window.localStorage.setItem(
-        STRATEGIES_STORAGE_KEY,
-        JSON.stringify(updatedStrategies),
-      )
+      if (!saveStoredValue(STRATEGIES_STORAGE_KEY, updatedStrategies)) {
+        setStrategySavedMessage(
+          'This strategy could not be deleted in this browser.',
+        )
+        return currentStrategies
+      }
       return updatedStrategies
     })
   }
@@ -249,7 +462,10 @@ function App() {
             situations={situations}
             onChooseSituation={chooseSituation}
             onOpenBodyRegulation={openBodyRegulation}
+            onOpenCarerHandover={openCarerHandover}
+            onOpenDailyCheckIn={openDailyCheckIn}
             onOpenEvidenceSupports={openEvidenceSupports}
+            onOpenEmergencyProfile={openEmergencyProfile}
             onOpenFurtherReading={openFurtherReading}
             onOpenGuideArea={openGuideArea}
             onOpenProfile={openProfile}
@@ -291,6 +507,45 @@ function App() {
             onChange={updateProfileField}
             onOpenGuideArea={openGuideArea}
             onSave={saveProfile}
+          />
+        )}
+
+        {currentView === 'dailyCheckIn' && (
+          <DailyCheckInScreen
+            checkIn={
+              dailyCheckIns.find((checkIn) => checkIn.date === getTodayKey()) ??
+              emptyDailyCheckIn
+            }
+            savedMessage={dailyCheckInSavedMessage}
+            onBack={returnHome}
+            onChange={updateDailyCheckInField}
+            onSave={saveDailyCheckIn}
+          />
+        )}
+
+        {currentView === 'emergencyProfile' && (
+          <EmergencyProfileScreen
+            emergencyProfile={emergencyProfile}
+            savedMessage={emergencyProfileSavedMessage}
+            onBack={returnHome}
+            onChange={updateEmergencyProfileField}
+            onSave={saveEmergencyProfile}
+          />
+        )}
+
+        {currentView === 'carerHandover' && (
+          <CarerHandoverScreen
+            dailyCheckIn={
+              dailyCheckIns.find((checkIn) => checkIn.date === getTodayKey()) ??
+              emptyDailyCheckIn
+            }
+            emergencyProfile={emergencyProfile}
+            handoverNote={handoverNote}
+            profile={profile}
+            savedMessage={handoverSavedMessage}
+            onBack={returnHome}
+            onChangeNote={updateHandoverNote}
+            onSaveNote={saveHandoverNote}
           />
         )}
 

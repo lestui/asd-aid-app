@@ -448,6 +448,71 @@ h2 {
   accent-color: var(--color-primary);
 }
 
+.status-summary {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-control);
+  background: var(--color-primary-pale);
+  color: var(--color-text);
+  line-height: 1.45;
+}
+
+.status-summary span {
+  color: var(--color-text-muted);
+  font-size: 0.92rem;
+}
+
+.status-grid {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.status-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.85rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-control);
+  background: var(--color-card);
+  color: var(--color-text);
+  line-height: 1.35;
+}
+
+.status-option input {
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.15rem;
+  accent-color: var(--color-primary);
+}
+
+.status-option span {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.status-option small {
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+}
+
+.status-option.selected {
+  border-color: var(--color-primary);
+  background: var(--color-primary-pale);
+}
+
+.status-option.yellow.selected {
+  border-color: var(--color-gold);
+  background: var(--color-gold-pale);
+}
+
+.status-option.red.selected {
+  border-color: var(--color-warn);
+  background: var(--color-warn-bg);
+}
+
 .profile-field input,
 .profile-field select,
 .profile-field textarea,
@@ -981,6 +1046,7 @@ h2 {
   }
 
   .checkbox-grid,
+  .status-grid,
   .recommendation-list,
   .recommendation-actions {
     grid-template-columns: repeat(2, minmax(0, 1fr));

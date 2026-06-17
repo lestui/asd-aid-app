@@ -11,6 +11,9 @@ const situationHints = {
 
 const quickActions = [
   ['Child profile', 'Keep child-specific details handy.', 'profile'],
+  ['Daily check-in', "Set today's regulation baseline.", 'daily'],
+  ['Emergency profile', 'Keep distress support notes ready.', 'emergency'],
+  ['Carer handover', 'Generate a short note for today.', 'handover'],
   ['Saved strategies', 'Return to support plans that helped.', 'saved'],
   ['Evidence-informed supports', 'Browse searchable support cards.', 'evidence'],
   ['Body regulation & boundaries', 'Body checks, privacy, and safe scripts.', 'body'],
@@ -25,7 +28,10 @@ function HomeScreen({
   situations,
   onChooseSituation,
   onOpenBodyRegulation,
+  onOpenCarerHandover,
+  onOpenDailyCheckIn,
   onOpenEvidenceSupports,
+  onOpenEmergencyProfile,
   onOpenFurtherReading,
   onOpenGuideArea,
   onOpenProfile,
@@ -34,6 +40,9 @@ function HomeScreen({
 }) {
   const actionHandlers = {
     profile: onOpenProfile,
+    daily: onOpenDailyCheckIn,
+    emergency: onOpenEmergencyProfile,
+    handover: onOpenCarerHandover,
     saved: onOpenSavedStrategies,
     evidence: onOpenEvidenceSupports,
     body: onOpenBodyRegulation,
