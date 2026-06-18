@@ -6,6 +6,7 @@ import DailyCheckInScreen from './components/DailyCheckInScreen.jsx'
 import EmergencyProfileScreen from './components/EmergencyProfileScreen.jsx'
 import EvidenceSupportScreen from './components/EvidenceSupportScreen.jsx'
 import FlowScreen from './components/FlowScreen.jsx'
+import FamilyGuideScreen from './components/FamilyGuideScreen.jsx'
 import FurtherReadingScreen from './components/FurtherReadingScreen.jsx'
 import GuideAreaScreen from './components/GuideAreaScreen.jsx'
 import HomeScreen from './components/HomeScreen.jsx'
@@ -22,6 +23,7 @@ const DAILY_CHECKIN_STORAGE_KEY = 'asd-aid-daily-checkins'
 const EMERGENCY_PROFILE_STORAGE_KEY = 'asd-aid-emergency-profile'
 const HANDOVER_NOTE_STORAGE_KEY = 'asd-aid-carer-handover-note'
 const SAFE_FOODS_STORAGE_KEY = 'asd-aid-safe-foods'
+const FAMILY_GUIDE_STORAGE_KEY = 'asd-aid-family-guide'
 
 const emptyProfile = {
   nickname: '',
@@ -88,6 +90,31 @@ const emptySafeFood = {
   unsafeSubstitutes: '',
   sensoryNotes: '',
   caregiverNotes: '',
+  savedAt: '',
+}
+
+const familyGuideFields = [
+  'childNickname',
+  'greeting',
+  'pleaseDo',
+  'pleaseDoNot',
+  'comfortItems',
+  'safeFoodsReminder',
+  'transitionTips',
+  'overwhelmedSupport',
+  'eventNote',
+]
+
+const emptyFamilyGuide = {
+  childNickname: '',
+  greeting: '',
+  pleaseDo: '',
+  pleaseDoNot: '',
+  comfortItems: '',
+  safeFoodsReminder: '',
+  transitionTips: '',
+  overwhelmedSupport: '',
+  eventNote: '',
   savedAt: '',
 }
 
@@ -209,6 +236,23 @@ function normalizeSafeFoods(storedSafeFoods) {
     )
 }
 
+function normalizeFamilyGuide(storedGuide) {
+  const normalizedGuide = {
+    ...emptyFamilyGuide,
+    ...(storedGuide && typeof storedGuide === 'object' ? storedGuide : {}),
+  }
+
+  familyGuideFields.forEach((field) => {
+    normalizedGuide[field] =
+      typeof normalizedGuide[field] === 'string' ? normalizedGuide[field] : ''
+  })
+
+  normalizedGuide.savedAt =
+    typeof normalizedGuide.savedAt === 'string' ? normalizedGuide.savedAt : ''
+
+  return normalizedGuide
+}
+
 function normalizeStoredString(storedValue) {
   return typeof storedValue === 'string' ? storedValue : ''
 }
@@ -286,6 +330,7 @@ function App() {
   const [safeFoods, setSafeFoods] = useState([])
   const [safeFoodDraft, setSafeFoodDraft] = useState(emptySafeFood)
   const [editingSafeFoodId, setEditingSafeFoodId] = useState('')
+  const [familyGuide, setFamilyGuide] = useState(emptyFamilyGuide)
   const [profileSavedMessage, setProfileSavedMessage] = useState('')
   const [strategySavedMessage, setStrategySavedMessage] = useState('')
   const [dailyCheckInSavedMessage, setDailyCheckInSavedMessage] = useState('')
@@ -293,6 +338,7 @@ function App() {
     useState('')
   const [handoverSavedMessage, setHandoverSavedMessage] = useState('')
   const [safeFoodsSavedMessage, setSafeFoodsSavedMessage] = useState('')
+  const [familyGuideSavedMessage, setFamilyGuideSavedMessage] = useState('')
   const [activeGuideAreaId, setActiveGuideAreaId] = useState('')
 
   const activeFlow = flows[activeFlowKey]
@@ -325,6 +371,11 @@ function App() {
     setSafeFoods(
       normalizeSafeFoods(loadStoredValue(SAFE_FOODS_STORAGE_KEY, [])),
     )
+    setFamilyGuide(
+      normalizeFamilyGuide(
+        loadStoredValue(FAMILY_GUIDE_STORAGE_KEY, emptyFamilyGuide),
+      ),
+    )
   }, [])
 
   function returnHome() {
@@ -339,6 +390,7 @@ function App() {
     setEmergencyProfileSavedMessage('')
     setHandoverSavedMessage('')
     setSafeFoodsSavedMessage('')
+    setFamilyGuideSavedMessage('')
   }
 
   function openProfile() {
@@ -369,6 +421,11 @@ function App() {
   function openSafeFoods() {
     setCurrentView('safeFoods')
     setSafeFoodsSavedMessage('')
+  }
+
+  function openFamilyGuide() {
+    setCurrentView('familyGuide')
+    setFamilyGuideSavedMessage('')
   }
 
   function openEvidenceSupports() {
@@ -597,6 +654,30 @@ function App() {
     setSafeFoodsSavedMessage('Safe food could not be deleted in this browser.')
   }
 
+  function updateFamilyGuideField(field, value) {
+    setFamilyGuide((currentGuide) => ({
+      ...currentGuide,
+      [field]: value,
+    }))
+    setFamilyGuideSavedMessage('')
+  }
+
+  function saveFamilyGuide(event) {
+    event.preventDefault()
+    const updatedGuide = {
+      ...familyGuide,
+      savedAt: new Date().toISOString(),
+    }
+
+    if (saveStoredValue(FAMILY_GUIDE_STORAGE_KEY, updatedGuide)) {
+      setFamilyGuide(updatedGuide)
+      setFamilyGuideSavedMessage('Family guide saved on this device.')
+      return
+    }
+
+    setFamilyGuideSavedMessage('Family guide could not be saved in this browser.')
+  }
+
   function saveCurrentStrategy() {
     if (!activeFlow) {
       return
@@ -668,6 +749,7 @@ function App() {
             onOpenDailyCheckIn={openDailyCheckIn}
             onOpenEvidenceSupports={openEvidenceSupports}
             onOpenEmergencyProfile={openEmergencyProfile}
+            onOpenFamilyGuide={openFamilyGuide}
             onOpenFurtherReading={openFurtherReading}
             onOpenGuideArea={openGuideArea}
             onOpenProfile={openProfile}
@@ -764,6 +846,16 @@ function App() {
             onDelete={deleteSafeFood}
             onEdit={editSafeFood}
             onSave={saveSafeFood}
+          />
+        )}
+
+        {currentView === 'familyGuide' && (
+          <FamilyGuideScreen
+            familyGuide={familyGuide}
+            savedMessage={familyGuideSavedMessage}
+            onBack={returnHome}
+            onChange={updateFamilyGuideField}
+            onSave={saveFamilyGuide}
           />
         )}
 
