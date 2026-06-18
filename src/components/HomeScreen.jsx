@@ -1,5 +1,4 @@
 import HelperIllustration from './HelperIllustration.jsx'
-import { furtherReading } from '../data/furtherReading.js'
 import { guideAreas } from '../data/guideAreas.js'
 
 const situationHints = {
@@ -9,24 +8,48 @@ const situationHints = {
   'Public / private body behaviour': 'Calm, private, practical body-care support',
 }
 
-const quickActions = [
-  ['Child profile', 'Keep child-specific details handy.', 'profile'],
-  ['Daily check-in', "Set today's regulation baseline.", 'daily'],
-  ['Sleep support', 'Plan bedtime routines and night waking responses.', 'sleep'],
-  ['Emergency profile', 'Keep distress support notes ready.', 'emergency'],
-  ['Carer handover', 'Generate a short note for today.', 'handover'],
-  ['Family guide', 'Share warm interaction notes with relatives.', 'familyGuide'],
-  ['Safe foods', 'Keep exact food and substitute notes ready.', 'safeFoods'],
-  ['Funding tracker', 'Organise support hours, spending, and claim status.', 'funding'],
-  ['Saved strategies', 'Return to support plans that helped.', 'saved'],
-  ['Evidence-informed supports', 'Browse searchable support cards.', 'evidence'],
-  ['Body regulation & boundaries', 'Body checks, privacy, and safe scripts.', 'body'],
-  ['Toileting, hygiene & body routines', 'Practical routines across ages and settings.', 'toileting'],
-  ['Glossary', 'Plain-English meanings for support terms and acronyms.', 'glossary'],
-  ['Further reading', 'Optional books, guidelines, and references.', 'reading'],
+const quickActionGroups = [
+  {
+    title: 'Today',
+    actions: [
+      ['Daily check-in', "Set today's regulation baseline.", 'daily'],
+      ['Emergency profile', 'Keep distress support notes ready.', 'emergency'],
+      ['Carer handover', 'Generate a short note for today.', 'handover'],
+      ['Saved strategies', 'Return to support plans that helped.', 'saved'],
+    ],
+  },
+  {
+    title: 'Plans',
+    actions: [
+      ['Child profile', 'Keep child-specific details handy.', 'profile'],
+      ['Sleep support', 'Plan bedtime routines and night waking responses.', 'sleep'],
+      ['Safe foods', 'Keep exact food and substitute notes ready.', 'safeFoods'],
+      ['Family guide', 'Share warm interaction notes with relatives.', 'familyGuide'],
+      ['Support notes', 'Keep useful notes and support close.', 'supportNotes'],
+    ],
+  },
+  {
+    title: 'Topics',
+    actions: [
+      [
+        'Toileting, hygiene & body routines',
+        'Practical routines across ages and settings.',
+        'toileting',
+      ],
+      ['Body regulation & boundaries', 'Body checks, privacy, and safe scripts.', 'body'],
+      ['Browse by topic', 'Open communication, sensory, routine, and calm guides.', 'topics'],
+      ['Support database', 'Browse searchable support cards.', 'evidence'],
+    ],
+  },
+  {
+    title: 'Admin / Reference',
+    actions: [
+      ['Funding tracker', 'Organise your own support records and spending notes.', 'funding'],
+      ['Glossary', 'Plain-English meanings for support terms and acronyms.', 'glossary'],
+      ['Further reading', 'Optional books, guidelines, and references.', 'reading'],
+    ],
+  },
 ]
-
-const featuredReading = furtherReading.slice(0, 4)
 
 function HomeScreen({
   selectedSituation,
@@ -63,6 +86,11 @@ function HomeScreen({
     toileting: onOpenToiletingSupport,
     glossary: onOpenGlossary,
     reading: onOpenFurtherReading,
+    supportNotes: () => onOpenGuideArea('caregiver'),
+    topics: () =>
+      globalThis.document
+        ?.getElementById('browse-topic-title')
+        ?.scrollIntoView(),
   }
 
   return (
@@ -107,34 +135,43 @@ function HomeScreen({
       )}
 
       <section className="quick-section" aria-labelledby="quick-section-title">
-        <h2 id="quick-section-title">Keep close</h2>
-        <div className="home-actions">
-          {quickActions.map(([title, hint, actionKey]) => (
-            <button
-              className="secondary-action"
-              key={title}
-              type="button"
-              onClick={actionHandlers[actionKey]}
-            >
-              <span className="quick-icon" aria-hidden="true" />
-              <span>
-                <span>{title}</span>
-                <small>{hint}</small>
-              </span>
-            </button>
-          ))}
-        </div>
+        <h2 id="quick-section-title">Quick tools</h2>
+        {quickActionGroups.map((group) => (
+          <section
+            className="quick-group"
+            key={group.title}
+            aria-labelledby={`${group.title.replace(/\W+/g, '-').toLowerCase()}-title`}
+          >
+            <h3 id={`${group.title.replace(/\W+/g, '-').toLowerCase()}-title`}>
+              {group.title}
+            </h3>
+            <div className="home-actions">
+              {group.actions.map(([title, hint, actionKey]) => (
+                <button
+                  className="secondary-action"
+                  key={title}
+                  type="button"
+                  onClick={actionHandlers[actionKey]}
+                >
+                  <span className="quick-icon" aria-hidden="true" />
+                  <span>
+                    <span>{title}</span>
+                    <small>{hint}</small>
+                  </span>
+                </button>
+              ))}
+            </div>
+          </section>
+        ))}
       </section>
 
       <p className="privacy-note">
-        Child profile, saved strategies, daily check-ins, emergency profile,
-        sleep support, handover notes, safe foods, funding tracker, and family
-        guide stay on this device only. Anyone using the same browser or device
-        profile may be able to see saved data.
+        Anything you save stays on this device/browser only. Anyone using the
+        same browser profile may be able to see it.
       </p>
 
-      <section className="helper-card-section" aria-labelledby="helper-card-title">
-        <h2 id="helper-card-title">Guide areas</h2>
+      <section className="helper-card-section" aria-labelledby="browse-topic-title">
+        <h2 id="browse-topic-title">Browse by topic</h2>
         <div className="helper-card-grid">
           {guideAreas.map((guideArea) => (
             <button
@@ -152,34 +189,6 @@ function HomeScreen({
             </button>
           ))}
         </div>
-      </section>
-
-      <section
-        className="further-reading-section"
-        aria-labelledby="further-reading-title"
-      >
-        <h2 id="further-reading-title">Further reading</h2>
-        <div className="reading-list">
-          {featuredReading.map((item) => (
-            <article className="reading-card" key={item.id}>
-              <p className="reading-category">{item.category}</p>
-              <h3>{item.title}</h3>
-              <p className="reading-author">{item.author}</p>
-              <p>{item.short_original_summary}</p>
-            </article>
-          ))}
-        </div>
-        <button
-          className="primary-action"
-          type="button"
-          onClick={onOpenFurtherReading}
-        >
-          View all further reading
-        </button>
-        <p className="privacy-note">
-          Reading suggestions are optional background resources and should be
-          reviewed periodically.
-        </p>
       </section>
     </div>
   )

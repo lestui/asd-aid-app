@@ -218,6 +218,19 @@ h2 {
   margin-top: 0;
 }
 
+.quick-group {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.quick-group h3 {
+  margin: 0;
+  color: var(--color-primary-deep);
+  font-size: 1rem;
+  font-weight: 720;
+  line-height: 1.3;
+}
+
 .primary-action,
 .secondary-action,
 .delete-button {
@@ -1060,7 +1073,7 @@ h2 {
 .helper-card-section,
 .further-reading-section {
   display: grid;
-  gap: 0.7rem;
+  gap: 0.9rem;
 }
 
 @keyframes rise {
