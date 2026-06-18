@@ -58,8 +58,8 @@ function EvidenceSupportScreen({ onBack }) {
       <button className="back-button" type="button" onClick={onBack}>
         Back
       </button>
-      <p className="step-count">Evidence-informed supports</p>
-      <h2>Browse support ideas for common situations.</h2>
+      <p className="step-count">Support database</p>
+      <h2>Browse evidence-informed supports.</h2>
 
       <p className="education-disclaimer">
         This app provides general educational support information. It is not a

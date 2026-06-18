@@ -47,7 +47,7 @@ function buildFundingSummary(entries, totals) {
     `Total days used: ${totals.days}`,
     `Total amount spent: $${formatAmount(totals.amount)}`,
     '',
-    'Claim status counts:',
+    'Tracking status counts:',
     ...claimStatuses.map((status) => `${status}: ${totals.statusCounts[status] || 0}`),
   ]
 
@@ -138,8 +138,8 @@ function FundingTrackerScreen({
       <div className="screen-intro">
         <h2>Keep support spending notes in one place.</h2>
         <p>
-          Track dates, hours, days, spending, receipts, and claim status for
-          your own records.
+          Track dates, hours, days, spending, receipts, and personal tracking
+          status for your own records.
         </p>
       </div>
 
@@ -233,7 +233,10 @@ function FundingTrackerScreen({
             <strong>${formatAmount(totals.amount)}</strong>
           </article>
         </div>
-        <div className="saved-section-list" aria-label="Count by claim status">
+        <div
+          className="saved-section-list"
+          aria-label="Count by personal tracking status"
+        >
           {claimStatuses.map((status) => (
             <p key={status}>
               {status}: {totals.statusCounts[status] || 0}
@@ -280,7 +283,7 @@ function FundingTrackerScreen({
             </select>
           </label>
           <label className="filter-field">
-            <span>Filter by claim status</span>
+            <span>Filter by personal tracking status</span>
             <select
               value={statusFilter}
               onChange={(event) => setStatusFilter(event.target.value)}
