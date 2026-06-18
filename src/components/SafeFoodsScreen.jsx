@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { copyText } from '../utils/copyText.js'
 
 const safeFoodFields = [
   ['foodName', 'Food name', 'input'],
@@ -51,23 +52,12 @@ function SafeFoodsScreen({
       return
     }
 
-    try {
-      if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(grocerySummary)
-        setCopyMessage('Grocery summary copied.')
-        return
-      }
-
-      summaryRef.current?.select()
-      if (document.execCommand('copy')) {
-        setCopyMessage('Grocery summary copied.')
-        return
-      }
-    } catch {
-      // Fall through to the manual copy message.
-    }
-
-    setCopyMessage('Copy the grocery summary manually from the text box.')
+    const copied = await copyText(grocerySummary, summaryRef)
+    setCopyMessage(
+      copied
+        ? 'Grocery summary copied.'
+        : 'Copy the grocery summary manually from the text box.',
+    )
   }
 
   return (

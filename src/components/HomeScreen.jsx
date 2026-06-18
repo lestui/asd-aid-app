@@ -14,11 +14,13 @@ const quickActions = [
   ['Daily check-in', "Set today's regulation baseline.", 'daily'],
   ['Emergency profile', 'Keep distress support notes ready.', 'emergency'],
   ['Carer handover', 'Generate a short note for today.', 'handover'],
+  ['Family guide', 'Share warm interaction notes with relatives.', 'familyGuide'],
   ['Safe foods', 'Keep exact food and substitute notes ready.', 'safeFoods'],
   ['Saved strategies', 'Return to support plans that helped.', 'saved'],
   ['Evidence-informed supports', 'Browse searchable support cards.', 'evidence'],
   ['Body regulation & boundaries', 'Body checks, privacy, and safe scripts.', 'body'],
   ['Toileting, hygiene & body routines', 'Practical routines across ages and settings.', 'toileting'],
+  ['Glossary', 'Plain-English meanings for support terms and acronyms.', 'glossary'],
   ['Further reading', 'Optional books, guidelines, and references.', 'reading'],
 ]
 
@@ -33,7 +35,9 @@ function HomeScreen({
   onOpenDailyCheckIn,
   onOpenEvidenceSupports,
   onOpenEmergencyProfile,
+  onOpenFamilyGuide,
   onOpenFurtherReading,
+  onOpenGlossary,
   onOpenGuideArea,
   onOpenProfile,
   onOpenSafeFoods,
@@ -49,7 +53,9 @@ function HomeScreen({
     saved: onOpenSavedStrategies,
     evidence: onOpenEvidenceSupports,
     body: onOpenBodyRegulation,
+    familyGuide: onOpenFamilyGuide,
     toileting: onOpenToiletingSupport,
+    glossary: onOpenGlossary,
     reading: onOpenFurtherReading,
   }
 
@@ -116,8 +122,9 @@ function HomeScreen({
 
       <p className="privacy-note">
         Child profile, saved strategies, daily check-ins, emergency profile,
-        handover notes, and safe foods stay on this device only. Anyone using
-        the same browser or device profile may be able to see saved data.
+        handover notes, safe foods, and family guide stay on this device only.
+        Anyone using the same browser or device profile may be able to see saved
+        data.
       </p>
 
       <section className="helper-card-section" aria-labelledby="helper-card-title">
