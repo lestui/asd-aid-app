@@ -8,12 +8,14 @@ import EvidenceSupportScreen from './components/EvidenceSupportScreen.jsx'
 import FlowScreen from './components/FlowScreen.jsx'
 import FamilyGuideScreen from './components/FamilyGuideScreen.jsx'
 import FurtherReadingScreen from './components/FurtherReadingScreen.jsx'
+import FundingTrackerScreen from './components/FundingTrackerScreen.jsx'
 import GlossaryScreen from './components/GlossaryScreen.jsx'
 import GuideAreaScreen from './components/GuideAreaScreen.jsx'
 import HomeScreen from './components/HomeScreen.jsx'
 import ResultScreen from './components/ResultScreen.jsx'
 import SafeFoodsScreen from './components/SafeFoodsScreen.jsx'
 import SavedStrategiesScreen from './components/SavedStrategiesScreen.jsx'
+import SleepSupportScreen from './components/SleepSupportScreen.jsx'
 import ToiletingSupportScreen from './components/ToiletingSupportScreen.jsx'
 import { flows, situations } from './data/flows.js'
 import './App.css'
@@ -25,6 +27,8 @@ const EMERGENCY_PROFILE_STORAGE_KEY = 'asd-aid-emergency-profile'
 const HANDOVER_NOTE_STORAGE_KEY = 'asd-aid-carer-handover-note'
 const SAFE_FOODS_STORAGE_KEY = 'asd-aid-safe-foods'
 const FAMILY_GUIDE_STORAGE_KEY = 'asd-aid-family-guide'
+const FUNDING_TRACKER_STORAGE_KEY = 'asd-aid-funding-tracker'
+const SLEEP_PLAN_STORAGE_KEY = 'asd-aid-sleep-plan'
 
 const emptyProfile = {
   nickname: '',
@@ -119,6 +123,75 @@ const emptyFamilyGuide = {
   savedAt: '',
 }
 
+const fundingTrackerFields = [
+  'date',
+  'supportType',
+  'description',
+  'hoursUsed',
+  'daysUsed',
+  'amountSpent',
+  'receiptNote',
+  'claimStatus',
+  'notes',
+]
+
+const fundingSupportTypes = [
+  'Carer Support',
+  'Individualised Funding',
+  'Respite',
+  'Private support',
+  'Other',
+]
+
+const fundingClaimStatuses = [
+  'Not claimed',
+  'Submitted',
+  'Paid',
+  'Rejected / needs follow-up',
+]
+
+const emptyFundingTrackerEntry = {
+  id: '',
+  date: '',
+  supportType: 'Carer Support',
+  description: '',
+  hoursUsed: '',
+  daysUsed: '',
+  amountSpent: '',
+  receiptNote: '',
+  claimStatus: 'Not claimed',
+  notes: '',
+  savedAt: '',
+}
+
+const sleepPlanFields = [
+  'targetBedtime',
+  'targetWakeTime',
+  'routineChecklist',
+  'comfortItems',
+  'sleepEnvironmentNotes',
+  'whatHelpsSettle',
+  'whatMakesSleepWorse',
+  'nightWakingResponsePlan',
+  'morningImpactNotes',
+  'questionsForProfessionals',
+]
+
+const emptySleepPlan = {
+  targetBedtime: '',
+  targetWakeTime: '',
+  routineChecklist:
+    'Toilet\nDrink\nPajamas\nBrush teeth\nCalm activity\nComfort item\nLights low\nSame goodnight phrase',
+  comfortItems: '',
+  sleepEnvironmentNotes: '',
+  whatHelpsSettle: '',
+  whatMakesSleepWorse: '',
+  nightWakingResponsePlan: '',
+  morningImpactNotes: '',
+  questionsForProfessionals: '',
+  savedAt: '',
+}
+
 function normalizeProfile(storedProfile) {
   const mergedProfile = {
     ...emptyProfile,
@@ -194,11 +267,20 @@ function normalizeDailyCheckIns(storedCheckIns) {
   }
 
   return storedCheckIns
-    .filter((checkIn) => checkIn && typeof checkIn === 'object' && checkIn.date)
+    .filter((checkIn) => checkIn && typeof checkIn === 'object')
     .map((checkIn) => ({
-      ...emptyDailyCheckIn,
-      ...checkIn,
+      status: typeof checkIn.status === 'string' ? checkIn.status : '',
+      sleepQuality:
+        typeof checkIn.sleepQuality === 'string' ? checkIn.sleepQuality : '',
+      nightWaking:
+        typeof checkIn.nightWaking === 'string' ? checkIn.nightWaking : '',
+      wakeMood: typeof checkIn.wakeMood === 'string' ? checkIn.wakeMood : '',
+      note: typeof checkIn.note === 'string' ? checkIn.note : '',
+      sleepNote: typeof checkIn.sleepNote === 'string' ? checkIn.sleepNote : '',
+      date: typeof checkIn.date === 'string' ? checkIn.date : '',
+      savedAt: typeof checkIn.savedAt === 'string' ? checkIn.savedAt : '',
     }))
+    .filter((checkIn) => checkIn.date)
 }
 
 function normalizeEmergencyProfile(storedProfile) {
@@ -256,6 +338,65 @@ function normalizeFamilyGuide(storedGuide) {
 
 function normalizeStoredString(storedValue) {
   return typeof storedValue === 'string' ? storedValue : ''
+}
+
+function normalizeFundingTrackerEntries(storedEntries) {
+  if (!Array.isArray(storedEntries)) {
+    return []
+  }
+
+  return storedEntries
+    .filter((entry) => entry && typeof entry === 'object')
+    .map((entry) => {
+      const normalizedEntry = {
+        ...emptyFundingTrackerEntry,
+        id:
+          typeof entry.id === 'string' && entry.id
+            ? entry.id
+            : createLocalId('funding-entry'),
+        savedAt: typeof entry.savedAt === 'string' ? entry.savedAt : '',
+      }
+
+      fundingTrackerFields.forEach((field) => {
+        normalizedEntry[field] =
+          typeof entry[field] === 'string' ? entry[field] : ''
+      })
+
+      if (!fundingSupportTypes.includes(normalizedEntry.supportType)) {
+        normalizedEntry.supportType = 'Other'
+      }
+
+      if (!fundingClaimStatuses.includes(normalizedEntry.claimStatus)) {
+        normalizedEntry.claimStatus = 'Not claimed'
+      }
+
+      return normalizedEntry
+    })
+    .filter((entry) =>
+      fundingTrackerFields.some((field) => {
+        if (field === 'supportType' || field === 'claimStatus') {
+          return false
+        }
+        return entry[field].trim()
+      }),
+    )
+}
+
+function normalizeSleepPlan(storedPlan) {
+  const normalizedPlan = {
+    ...emptySleepPlan,
+    ...(storedPlan && typeof storedPlan === 'object' ? storedPlan : {}),
+  }
+
+  sleepPlanFields.forEach((field) => {
+    normalizedPlan[field] =
+      typeof normalizedPlan[field] === 'string' ? normalizedPlan[field] : ''
+  })
+
+  normalizedPlan.savedAt =
+    typeof normalizedPlan.savedAt === 'string' ? normalizedPlan.savedAt : ''
+
+  return normalizedPlan
 }
 
 function normalizeSavedStrategies(storedStrategies) {
@@ -350,6 +491,12 @@ function App() {
   const [safeFoodDraft, setSafeFoodDraft] = useState(emptySafeFood)
   const [editingSafeFoodId, setEditingSafeFoodId] = useState('')
   const [familyGuide, setFamilyGuide] = useState(emptyFamilyGuide)
+  const [fundingTrackerEntries, setFundingTrackerEntries] = useState([])
+  const [fundingTrackerDraft, setFundingTrackerDraft] = useState(
+    emptyFundingTrackerEntry,
+  )
+  const [editingFundingTrackerId, setEditingFundingTrackerId] = useState('')
+  const [sleepPlan, setSleepPlan] = useState(emptySleepPlan)
   const [profileSavedMessage, setProfileSavedMessage] = useState('')
   const [strategySavedMessage, setStrategySavedMessage] = useState('')
   const [dailyCheckInSavedMessage, setDailyCheckInSavedMessage] = useState('')
@@ -358,6 +505,9 @@ function App() {
   const [handoverSavedMessage, setHandoverSavedMessage] = useState('')
   const [safeFoodsSavedMessage, setSafeFoodsSavedMessage] = useState('')
   const [familyGuideSavedMessage, setFamilyGuideSavedMessage] = useState('')
+  const [fundingTrackerSavedMessage, setFundingTrackerSavedMessage] =
+    useState('')
+  const [sleepPlanSavedMessage, setSleepPlanSavedMessage] = useState('')
   const [activeGuideAreaId, setActiveGuideAreaId] = useState('')
 
   const activeFlow = flows[activeFlowKey]
@@ -395,6 +545,16 @@ function App() {
         loadStoredValue(FAMILY_GUIDE_STORAGE_KEY, emptyFamilyGuide),
       ),
     )
+    setFundingTrackerEntries(
+      sortNewestFirst(
+        normalizeFundingTrackerEntries(
+          loadStoredValue(FUNDING_TRACKER_STORAGE_KEY, []),
+        ),
+      ),
+    )
+    setSleepPlan(
+      normalizeSleepPlan(loadStoredValue(SLEEP_PLAN_STORAGE_KEY, emptySleepPlan)),
+    )
   }, [])
 
   function returnHome() {
@@ -410,6 +570,8 @@ function App() {
     setHandoverSavedMessage('')
     setSafeFoodsSavedMessage('')
     setFamilyGuideSavedMessage('')
+    setFundingTrackerSavedMessage('')
+    setSleepPlanSavedMessage('')
   }
 
   function openProfile() {
@@ -425,6 +587,11 @@ function App() {
   function openDailyCheckIn() {
     setCurrentView('dailyCheckIn')
     setDailyCheckInSavedMessage('')
+  }
+
+  function openSleepSupport() {
+    setCurrentView('sleepSupport')
+    setSleepPlanSavedMessage('')
   }
 
   function openEmergencyProfile() {
@@ -465,6 +632,11 @@ function App() {
 
   function openGlossary() {
     setCurrentView('glossary')
+  }
+
+  function openFundingTracker() {
+    setCurrentView('fundingTracker')
+    setFundingTrackerSavedMessage('')
   }
 
   function openGuideArea(guideAreaId) {
@@ -701,6 +873,120 @@ function App() {
     setFamilyGuideSavedMessage('Family guide could not be saved in this browser.')
   }
 
+  function updateFundingTrackerField(field, value) {
+    setFundingTrackerDraft((currentDraft) => ({
+      ...currentDraft,
+      [field]: value,
+    }))
+    setFundingTrackerSavedMessage('')
+  }
+
+  function resetFundingTrackerForm() {
+    setFundingTrackerDraft(emptyFundingTrackerEntry)
+    setEditingFundingTrackerId('')
+    setFundingTrackerSavedMessage('')
+  }
+
+  function saveFundingTrackerEntry(event) {
+    event.preventDefault()
+
+    const hasRecordDetail = fundingTrackerFields.some((field) => {
+      if (field === 'supportType' || field === 'claimStatus') {
+        return false
+      }
+      return fundingTrackerDraft[field].trim()
+    })
+
+    if (!hasRecordDetail) {
+      setFundingTrackerSavedMessage(
+        'Add at least one record detail before saving.',
+      )
+      return
+    }
+
+    const savedAt = new Date().toISOString()
+    const entryToSave = {
+      ...emptyFundingTrackerEntry,
+      ...fundingTrackerDraft,
+      id: editingFundingTrackerId || createLocalId('funding-entry'),
+      savedAt,
+    }
+    const updatedEntries = editingFundingTrackerId
+      ? fundingTrackerEntries.map((entry) =>
+          entry.id === editingFundingTrackerId ? entryToSave : entry,
+        )
+      : [entryToSave, ...fundingTrackerEntries]
+
+    const sortedEntries = sortNewestFirst(updatedEntries)
+
+    if (saveStoredValue(FUNDING_TRACKER_STORAGE_KEY, sortedEntries)) {
+      setFundingTrackerEntries(sortedEntries)
+      setFundingTrackerDraft(emptyFundingTrackerEntry)
+      setEditingFundingTrackerId('')
+      setFundingTrackerSavedMessage('Funding tracker entry saved on this device.')
+      return
+    }
+
+    setFundingTrackerSavedMessage(
+      'Funding tracker entry could not be saved in this browser.',
+    )
+  }
+
+  function editFundingTrackerEntry(entryId) {
+    const entryToEdit = fundingTrackerEntries.find((entry) => entry.id === entryId)
+    if (!entryToEdit) {
+      return
+    }
+
+    setFundingTrackerDraft(entryToEdit)
+    setEditingFundingTrackerId(entryId)
+    setFundingTrackerSavedMessage('Editing saved tracker entry.')
+  }
+
+  function deleteFundingTrackerEntry(entryId) {
+    const updatedEntries = fundingTrackerEntries.filter(
+      (entry) => entry.id !== entryId,
+    )
+
+    if (saveStoredValue(FUNDING_TRACKER_STORAGE_KEY, updatedEntries)) {
+      setFundingTrackerEntries(updatedEntries)
+      if (editingFundingTrackerId === entryId) {
+        setFundingTrackerDraft(emptyFundingTrackerEntry)
+        setEditingFundingTrackerId('')
+      }
+      setFundingTrackerSavedMessage('Funding tracker entry deleted.')
+      return
+    }
+
+    setFundingTrackerSavedMessage(
+      'Funding tracker entry could not be deleted in this browser.',
+    )
+  }
+
+  function updateSleepPlanField(field, value) {
+    setSleepPlan((currentPlan) => ({
+      ...currentPlan,
+      [field]: value,
+    }))
+    setSleepPlanSavedMessage('')
+  }
+
+  function saveSleepPlan(event) {
+    event.preventDefault()
+    const updatedPlan = {
+      ...sleepPlan,
+      savedAt: new Date().toISOString(),
+    }
+
+    if (saveStoredValue(SLEEP_PLAN_STORAGE_KEY, updatedPlan)) {
+      setSleepPlan(updatedPlan)
+      setSleepPlanSavedMessage('Sleep plan saved on this device.')
+      return
+    }
+
+    setSleepPlanSavedMessage('Sleep plan could not be saved in this browser.')
+  }
+
   function saveCurrentStrategy() {
     if (!activeFlow) {
       return
@@ -778,11 +1064,13 @@ function App() {
             onOpenEmergencyProfile={openEmergencyProfile}
             onOpenFamilyGuide={openFamilyGuide}
             onOpenFurtherReading={openFurtherReading}
+            onOpenFundingTracker={openFundingTracker}
             onOpenGlossary={openGlossary}
             onOpenGuideArea={openGuideArea}
             onOpenProfile={openProfile}
             onOpenSafeFoods={openSafeFoods}
             onOpenSavedStrategies={openSavedStrategies}
+            onOpenSleepSupport={openSleepSupport}
             onOpenToiletingSupport={openToiletingSupport}
           />
         )}
@@ -832,6 +1120,7 @@ function App() {
             savedMessage={dailyCheckInSavedMessage}
             onBack={returnHome}
             onChange={updateDailyCheckInField}
+            onOpenSleepSupport={openSleepSupport}
             onSave={saveDailyCheckIn}
           />
         )}
@@ -909,6 +1198,31 @@ function App() {
 
         {currentView === 'furtherReading' && (
           <FurtherReadingScreen onBack={returnHome} />
+        )}
+
+        {currentView === 'fundingTracker' && (
+          <FundingTrackerScreen
+            draft={fundingTrackerDraft}
+            editingEntryId={editingFundingTrackerId}
+            entries={fundingTrackerEntries}
+            savedMessage={fundingTrackerSavedMessage}
+            onBack={returnHome}
+            onCancelEdit={resetFundingTrackerForm}
+            onChange={updateFundingTrackerField}
+            onDelete={deleteFundingTrackerEntry}
+            onEdit={editFundingTrackerEntry}
+            onSave={saveFundingTrackerEntry}
+          />
+        )}
+
+        {currentView === 'sleepSupport' && (
+          <SleepSupportScreen
+            plan={sleepPlan}
+            savedMessage={sleepPlanSavedMessage}
+            onBack={returnHome}
+            onChange={updateSleepPlanField}
+            onSave={saveSleepPlan}
+          />
         )}
 
         {currentView === 'glossary' && <GlossaryScreen onBack={returnHome} />}
