@@ -44,6 +44,7 @@ const quickActionGroups = [
   {
     title: 'Admin / Reference',
     actions: [
+      ['About this app', 'What this app does, privacy, and safety notes.', 'about'],
       ['Funding tracker', 'Organise your own support records and spending notes.', 'funding'],
       ['Glossary', 'Plain-English meanings for support terms and acronyms.', 'glossary'],
       ['Further reading', 'Optional books, guidelines, and references.', 'reading'],
@@ -55,6 +56,7 @@ function HomeScreen({
   selectedSituation,
   situations,
   onChooseSituation,
+  onOpenAboutThisApp,
   onOpenBodyRegulation,
   onOpenCarerHandover,
   onOpenDailyCheckIn,
@@ -73,6 +75,7 @@ function HomeScreen({
 }) {
   const actionHandlers = {
     profile: onOpenProfile,
+    about: onOpenAboutThisApp,
     daily: onOpenDailyCheckIn,
     sleep: onOpenSleepSupport,
     emergency: onOpenEmergencyProfile,
@@ -98,8 +101,8 @@ function HomeScreen({
       <div className="screen-intro">
         <h2>What is happening right now?</h2>
         <p>
-          Pick what fits this moment. The guide will walk through calm questions
-          and practical next steps.
+          Start with what is happening now, or use the tools below to save plans
+          and notes for later.
         </p>
       </div>
       <div className="button-list">

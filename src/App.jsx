@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import AboutThisAppScreen from './components/AboutThisAppScreen.jsx'
 import BodyRegulationScreen from './components/BodyRegulationScreen.jsx'
 import CarerHandoverScreen from './components/CarerHandoverScreen.jsx'
 import ChildProfileScreen from './components/ChildProfileScreen.jsx'
@@ -579,6 +580,10 @@ function App() {
     setProfileSavedMessage('')
   }
 
+  function openAboutThisApp() {
+    setCurrentView('aboutThisApp')
+  }
+
   function openSavedStrategies() {
     setCurrentView('savedStrategies')
     setStrategySavedMessage('')
@@ -1057,6 +1062,7 @@ function App() {
             selectedSituation={selectedSituation}
             situations={situations}
             onChooseSituation={chooseSituation}
+            onOpenAboutThisApp={openAboutThisApp}
             onOpenBodyRegulation={openBodyRegulation}
             onOpenCarerHandover={openCarerHandover}
             onOpenDailyCheckIn={openDailyCheckIn}
@@ -1095,6 +1101,10 @@ function App() {
             onBack={returnHome}
             onSaveStrategy={saveCurrentStrategy}
           />
+        )}
+
+        {currentView === 'aboutThisApp' && (
+          <AboutThisAppScreen onBack={returnHome} />
         )}
 
         {currentView === 'profile' && (
@@ -1237,7 +1247,8 @@ function App() {
 
       <p className="disclaimer">
         This app provides general educational support information. It is not a
-        diagnostic tool and does not replace professional advice.
+        diagnostic tool and does not replace professional advice. If anyone is
+        in immediate danger, call local emergency services.
       </p>
     </main>
   )

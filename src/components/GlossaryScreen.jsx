@@ -25,7 +25,7 @@ const glossaryTerms = [
     expanded: 'Speech Language Therapist / Speech Language Therapy',
     definition:
       'Support for communication, understanding language, speech, social communication, visual supports, and communication tools.',
-    context: 'Some services may use “speech therapist” or “speech-language pathologist” for similar roles.',
+    context: 'Some services may use "speech therapist" or "speech-language pathologist" for similar roles.',
   },
   {
     term: 'MoE',
