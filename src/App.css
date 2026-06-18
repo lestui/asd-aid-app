@@ -823,6 +823,48 @@ h2 {
   gap: 0.9rem;
 }
 
+.podcast-section,
+.podcast-group {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.podcast-group h3 {
+  margin: 0;
+  color: var(--color-primary-deep);
+  font-size: 1rem;
+  font-weight: 720;
+  line-height: 1.3;
+}
+
+.podcast-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.podcast-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.25rem;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-primary-pale);
+  color: var(--color-primary-deep);
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+.podcast-links a:hover,
+.podcast-links a:focus-visible {
+  border-color: var(--color-primary);
+  outline: none;
+  box-shadow: 0 0.55rem 1.1rem rgba(29, 85, 50, 0.1);
+}
+
 .reading-card {
   display: flex;
   flex-direction: column;
