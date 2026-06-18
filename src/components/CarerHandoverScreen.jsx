@@ -1,3 +1,6 @@
+import { useRef, useState } from 'react'
+import { copyText } from '../utils/copyText.js'
+
 const statusLabels = {
   green: 'Green day',
   yellow: 'Yellow day',
@@ -101,12 +104,23 @@ function CarerHandoverScreen({
   onChangeNote,
   onSaveNote,
 }) {
+  const [copyMessage, setCopyMessage] = useState('')
+  const messageRef = useRef(null)
   const handoverMessage = buildHandoverMessage({
     dailyCheckIn,
     emergencyProfile,
     handoverNote,
     profile,
   })
+
+  async function copyHandoverMessage() {
+    const copied = await copyText(handoverMessage, messageRef)
+    setCopyMessage(
+      copied
+        ? 'Handover message copied.'
+        : 'Copy the handover message manually from the text box.',
+    )
+  }
 
   return (
     <div className="decision-panel profile-panel">
@@ -153,8 +167,20 @@ function CarerHandoverScreen({
 
       <label className="profile-field">
         <span>Copyable handover message</span>
-        <textarea readOnly rows="14" value={handoverMessage} />
+        <textarea readOnly ref={messageRef} rows="14" value={handoverMessage} />
       </label>
+      <button
+        className="secondary-action compact-action"
+        type="button"
+        onClick={copyHandoverMessage}
+      >
+        Copy handover message
+      </button>
+      {copyMessage && (
+        <p className="selection-note" aria-live="polite">
+          {copyMessage}
+        </p>
+      )}
     </div>
   )
 }

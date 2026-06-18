@@ -617,10 +617,9 @@ h2 {
 }
 
 .safe-food-card-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
+  display: grid;
   gap: 0.5rem;
+  width: 100%;
 }
 
 .safe-food-details {
@@ -1098,6 +1097,12 @@ h2 {
   .recommendation-list,
   .recommendation-actions {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .safe-food-card-actions {
+    width: auto;
+    grid-template-columns: repeat(2, max-content);
+    justify-content: end;
   }
 
   .helper-card-grid {

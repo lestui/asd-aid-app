@@ -264,25 +264,43 @@ function normalizeSavedStrategies(storedStrategies) {
 
   return storedStrategies
     .filter((strategy) => strategy && typeof strategy === 'object')
-    .map((strategy) => ({
-      ...strategy,
-      answers: Array.isArray(strategy.answers)
-        ? strategy.answers
-            .filter((answer) => answer && typeof answer === 'object')
-            .map((answer) => ({
-              question: answer.question ?? '',
-              answer: answer.answer ?? '',
-            }))
-        : [],
-      resultSections: Array.isArray(strategy.resultSections)
-        ? strategy.resultSections
-            .filter((section) => section && typeof section === 'object')
-            .map((section) => ({
-              ...section,
-              title: section.title ?? '',
-            }))
-        : [],
-    }))
+    .map((strategy) => {
+      const normalizedStrategy = {
+        id: typeof strategy.id === 'string' ? strategy.id : '',
+        flowTitle:
+          typeof strategy.flowTitle === 'string' ? strategy.flowTitle : '',
+        savedAt: typeof strategy.savedAt === 'string' ? strategy.savedAt : '',
+        answers: Array.isArray(strategy.answers)
+          ? strategy.answers
+              .filter((answer) => answer && typeof answer === 'object')
+              .map((answer) => ({
+                question:
+                  typeof answer.question === 'string' ? answer.question : '',
+                answer: typeof answer.answer === 'string' ? answer.answer : '',
+              }))
+              .filter((answer) => answer.question || answer.answer)
+          : [],
+        resultSections: Array.isArray(strategy.resultSections)
+          ? strategy.resultSections
+              .filter((section) => section && typeof section === 'object')
+              .map((section) => ({
+                ...section,
+                title: typeof section.title === 'string' ? section.title : '',
+                content:
+                  typeof section.content === 'string' ? section.content : '',
+                items: Array.isArray(section.items)
+                  ? section.items.filter((item) => typeof item === 'string')
+                  : [],
+              }))
+              .filter(
+                (section) =>
+                  section.title || section.content || section.items.length > 0,
+              )
+          : [],
+      }
+
+      return normalizedStrategy
+    })
     .filter(
       (strategy) =>
         strategy.id ||

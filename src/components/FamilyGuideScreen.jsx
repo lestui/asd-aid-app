@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { copyText } from '../utils/copyText.js'
 
 const familyGuideFields = [
   ['childNickname', 'Child nickname', 'input'],
@@ -48,23 +49,12 @@ function FamilyGuideScreen({
   const guideMessage = buildFamilyGuideMessage(familyGuide)
 
   async function copyGuideMessage() {
-    try {
-      if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(guideMessage)
-        setCopyMessage('Family guide copied.')
-        return
-      }
-
-      messageRef.current?.select()
-      if (document.execCommand('copy')) {
-        setCopyMessage('Family guide copied.')
-        return
-      }
-    } catch {
-      // Fall through to manual copy guidance.
-    }
-
-    setCopyMessage('Copy the family guide manually from the text box.')
+    const copied = await copyText(guideMessage, messageRef)
+    setCopyMessage(
+      copied
+        ? 'Family guide copied.'
+        : 'Copy the family guide manually from the text box.',
+    )
   }
 
   return (
