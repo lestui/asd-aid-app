@@ -267,11 +267,20 @@ function normalizeDailyCheckIns(storedCheckIns) {
   }
 
   return storedCheckIns
-    .filter((checkIn) => checkIn && typeof checkIn === 'object' && checkIn.date)
+    .filter((checkIn) => checkIn && typeof checkIn === 'object')
     .map((checkIn) => ({
-      ...emptyDailyCheckIn,
-      ...checkIn,
+      status: typeof checkIn.status === 'string' ? checkIn.status : '',
+      sleepQuality:
+        typeof checkIn.sleepQuality === 'string' ? checkIn.sleepQuality : '',
+      nightWaking:
+        typeof checkIn.nightWaking === 'string' ? checkIn.nightWaking : '',
+      wakeMood: typeof checkIn.wakeMood === 'string' ? checkIn.wakeMood : '',
+      note: typeof checkIn.note === 'string' ? checkIn.note : '',
+      sleepNote: typeof checkIn.sleepNote === 'string' ? checkIn.sleepNote : '',
+      date: typeof checkIn.date === 'string' ? checkIn.date : '',
+      savedAt: typeof checkIn.savedAt === 'string' ? checkIn.savedAt : '',
     }))
+    .filter((checkIn) => checkIn.date)
 }
 
 function normalizeEmergencyProfile(storedProfile) {

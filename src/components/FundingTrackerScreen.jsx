@@ -24,7 +24,7 @@ const fundingFields = [
   ['daysUsed', 'Days used', 'number'],
   ['amountSpent', 'Amount spent', 'number'],
   ['receiptNote', 'Receipt/reference note', 'input'],
-  ['claimStatus', 'Claim/reimbursement status', 'select'],
+  ['claimStatus', 'Personal tracking status', 'select'],
   ['notes', 'Notes', 'textarea'],
 ]
 

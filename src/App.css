@@ -574,7 +574,13 @@ h2 {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 1rem;
+}
+
+.saved-card-header > div:first-child {
+  min-width: min(100%, 14rem);
+  flex: 1 1 14rem;
 }
 
 .saved-card h3 {
@@ -1198,6 +1204,10 @@ h2 {
     width: auto;
     grid-template-columns: repeat(2, max-content);
     justify-content: end;
+  }
+
+  .saved-card-header {
+    flex-wrap: nowrap;
   }
 
   .funding-total-grid {
