@@ -20,6 +20,7 @@ const quickActions = [
   ['Evidence-informed supports', 'Browse searchable support cards.', 'evidence'],
   ['Body regulation & boundaries', 'Body checks, privacy, and safe scripts.', 'body'],
   ['Toileting, hygiene & body routines', 'Practical routines across ages and settings.', 'toileting'],
+  ['Glossary', 'Plain-English meanings for support terms and acronyms.', 'glossary'],
   ['Further reading', 'Optional books, guidelines, and references.', 'reading'],
 ]
 
@@ -36,6 +37,7 @@ function HomeScreen({
   onOpenEmergencyProfile,
   onOpenFamilyGuide,
   onOpenFurtherReading,
+  onOpenGlossary,
   onOpenGuideArea,
   onOpenProfile,
   onOpenSafeFoods,
@@ -53,6 +55,7 @@ function HomeScreen({
     body: onOpenBodyRegulation,
     familyGuide: onOpenFamilyGuide,
     toileting: onOpenToiletingSupport,
+    glossary: onOpenGlossary,
     reading: onOpenFurtherReading,
   }
 

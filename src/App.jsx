@@ -8,6 +8,7 @@ import EvidenceSupportScreen from './components/EvidenceSupportScreen.jsx'
 import FlowScreen from './components/FlowScreen.jsx'
 import FamilyGuideScreen from './components/FamilyGuideScreen.jsx'
 import FurtherReadingScreen from './components/FurtherReadingScreen.jsx'
+import GlossaryScreen from './components/GlossaryScreen.jsx'
 import GuideAreaScreen from './components/GuideAreaScreen.jsx'
 import HomeScreen from './components/HomeScreen.jsx'
 import ResultScreen from './components/ResultScreen.jsx'
@@ -462,6 +463,10 @@ function App() {
     setCurrentView('furtherReading')
   }
 
+  function openGlossary() {
+    setCurrentView('glossary')
+  }
+
   function openGuideArea(guideAreaId) {
     setActiveGuideAreaId(guideAreaId)
     setCurrentView('guideArea')
@@ -754,6 +759,10 @@ function App() {
             <p className="subtitle">
               Calm decision support for everyday autism and ADHD challenges.
             </p>
+            <p className="acronym-note">
+              ASD means Autism Spectrum Disorder. ADHD means
+              attention-deficit/hyperactivity disorder.
+            </p>
           </div>
         </header>
 
@@ -769,6 +778,7 @@ function App() {
             onOpenEmergencyProfile={openEmergencyProfile}
             onOpenFamilyGuide={openFamilyGuide}
             onOpenFurtherReading={openFurtherReading}
+            onOpenGlossary={openGlossary}
             onOpenGuideArea={openGuideArea}
             onOpenProfile={openProfile}
             onOpenSafeFoods={openSafeFoods}
@@ -900,6 +910,8 @@ function App() {
         {currentView === 'furtherReading' && (
           <FurtherReadingScreen onBack={returnHome} />
         )}
+
+        {currentView === 'glossary' && <GlossaryScreen onBack={returnHome} />}
 
         {currentView === 'guideArea' && (
           <GuideAreaScreen
