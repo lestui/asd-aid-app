@@ -29,7 +29,14 @@ function hasSleepSummary(checkIn) {
   )
 }
 
-function DailyCheckInScreen({ checkIn, savedMessage, onBack, onChange, onSave }) {
+function DailyCheckInScreen({
+  checkIn,
+  savedMessage,
+  onBack,
+  onChange,
+  onOpenSleepSupport,
+  onSave,
+}) {
   const selectedStatus = statusOptions.find(
     (option) => option.value === checkIn.status,
   )
@@ -57,6 +64,14 @@ function DailyCheckInScreen({ checkIn, savedMessage, onBack, onChange, onSave })
         Sleep information is for caregiver planning and does not replace medical
         advice.
       </p>
+
+      <button
+        className="secondary-action compact-action"
+        type="button"
+        onClick={onOpenSleepSupport}
+      >
+        Open sleep support plan
+      </button>
 
       {selectedStatus && (
         <section className="status-summary" aria-label="Today's saved status">

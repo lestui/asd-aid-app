@@ -12,6 +12,7 @@ const situationHints = {
 const quickActions = [
   ['Child profile', 'Keep child-specific details handy.', 'profile'],
   ['Daily check-in', "Set today's regulation baseline.", 'daily'],
+  ['Sleep support', 'Plan bedtime routines and night waking responses.', 'sleep'],
   ['Emergency profile', 'Keep distress support notes ready.', 'emergency'],
   ['Carer handover', 'Generate a short note for today.', 'handover'],
   ['Family guide', 'Share warm interaction notes with relatives.', 'familyGuide'],
@@ -44,11 +45,13 @@ function HomeScreen({
   onOpenProfile,
   onOpenSafeFoods,
   onOpenSavedStrategies,
+  onOpenSleepSupport,
   onOpenToiletingSupport,
 }) {
   const actionHandlers = {
     profile: onOpenProfile,
     daily: onOpenDailyCheckIn,
+    sleep: onOpenSleepSupport,
     emergency: onOpenEmergencyProfile,
     handover: onOpenCarerHandover,
     safeFoods: onOpenSafeFoods,
@@ -125,9 +128,9 @@ function HomeScreen({
 
       <p className="privacy-note">
         Child profile, saved strategies, daily check-ins, emergency profile,
-        handover notes, safe foods, and family guide stay on this device only.
-        Anyone using the same browser or device profile may be able to see saved
-        data.
+        sleep support, handover notes, safe foods, funding tracker, and family
+        guide stay on this device only. Anyone using the same browser or device
+        profile may be able to see saved data.
       </p>
 
       <section className="helper-card-section" aria-labelledby="helper-card-title">

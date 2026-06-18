@@ -15,6 +15,7 @@ import HomeScreen from './components/HomeScreen.jsx'
 import ResultScreen from './components/ResultScreen.jsx'
 import SafeFoodsScreen from './components/SafeFoodsScreen.jsx'
 import SavedStrategiesScreen from './components/SavedStrategiesScreen.jsx'
+import SleepSupportScreen from './components/SleepSupportScreen.jsx'
 import ToiletingSupportScreen from './components/ToiletingSupportScreen.jsx'
 import { flows, situations } from './data/flows.js'
 import './App.css'
@@ -27,6 +28,7 @@ const HANDOVER_NOTE_STORAGE_KEY = 'asd-aid-carer-handover-note'
 const SAFE_FOODS_STORAGE_KEY = 'asd-aid-safe-foods'
 const FAMILY_GUIDE_STORAGE_KEY = 'asd-aid-family-guide'
 const FUNDING_TRACKER_STORAGE_KEY = 'asd-aid-funding-tracker'
+const SLEEP_PLAN_STORAGE_KEY = 'asd-aid-sleep-plan'
 
 const emptyProfile = {
   nickname: '',
@@ -159,6 +161,34 @@ const emptyFundingTrackerEntry = {
   receiptNote: '',
   claimStatus: 'Not claimed',
   notes: '',
+  savedAt: '',
+}
+
+const sleepPlanFields = [
+  'targetBedtime',
+  'targetWakeTime',
+  'routineChecklist',
+  'comfortItems',
+  'sleepEnvironmentNotes',
+  'whatHelpsSettle',
+  'whatMakesSleepWorse',
+  'nightWakingResponsePlan',
+  'morningImpactNotes',
+  'questionsForProfessionals',
+]
+
+const emptySleepPlan = {
+  targetBedtime: '',
+  targetWakeTime: '',
+  routineChecklist:
+    'Toilet\nDrink\nPajamas\nBrush teeth\nCalm activity\nComfort item\nLights low\nSame goodnight phrase',
+  comfortItems: '',
+  sleepEnvironmentNotes: '',
+  whatHelpsSettle: '',
+  whatMakesSleepWorse: '',
+  nightWakingResponsePlan: '',
+  morningImpactNotes: '',
+  questionsForProfessionals: '',
   savedAt: '',
 }
 
@@ -343,6 +373,23 @@ function normalizeFundingTrackerEntries(storedEntries) {
     )
 }
 
+function normalizeSleepPlan(storedPlan) {
+  const normalizedPlan = {
+    ...emptySleepPlan,
+    ...(storedPlan && typeof storedPlan === 'object' ? storedPlan : {}),
+  }
+
+  sleepPlanFields.forEach((field) => {
+    normalizedPlan[field] =
+      typeof normalizedPlan[field] === 'string' ? normalizedPlan[field] : ''
+  })
+
+  normalizedPlan.savedAt =
+    typeof normalizedPlan.savedAt === 'string' ? normalizedPlan.savedAt : ''
+
+  return normalizedPlan
+}
+
 function normalizeSavedStrategies(storedStrategies) {
   if (!Array.isArray(storedStrategies)) {
     return []
@@ -440,6 +487,7 @@ function App() {
     emptyFundingTrackerEntry,
   )
   const [editingFundingTrackerId, setEditingFundingTrackerId] = useState('')
+  const [sleepPlan, setSleepPlan] = useState(emptySleepPlan)
   const [profileSavedMessage, setProfileSavedMessage] = useState('')
   const [strategySavedMessage, setStrategySavedMessage] = useState('')
   const [dailyCheckInSavedMessage, setDailyCheckInSavedMessage] = useState('')
@@ -450,6 +498,7 @@ function App() {
   const [familyGuideSavedMessage, setFamilyGuideSavedMessage] = useState('')
   const [fundingTrackerSavedMessage, setFundingTrackerSavedMessage] =
     useState('')
+  const [sleepPlanSavedMessage, setSleepPlanSavedMessage] = useState('')
   const [activeGuideAreaId, setActiveGuideAreaId] = useState('')
 
   const activeFlow = flows[activeFlowKey]
@@ -494,6 +543,9 @@ function App() {
         ),
       ),
     )
+    setSleepPlan(
+      normalizeSleepPlan(loadStoredValue(SLEEP_PLAN_STORAGE_KEY, emptySleepPlan)),
+    )
   }, [])
 
   function returnHome() {
@@ -510,6 +562,7 @@ function App() {
     setSafeFoodsSavedMessage('')
     setFamilyGuideSavedMessage('')
     setFundingTrackerSavedMessage('')
+    setSleepPlanSavedMessage('')
   }
 
   function openProfile() {
@@ -525,6 +578,11 @@ function App() {
   function openDailyCheckIn() {
     setCurrentView('dailyCheckIn')
     setDailyCheckInSavedMessage('')
+  }
+
+  function openSleepSupport() {
+    setCurrentView('sleepSupport')
+    setSleepPlanSavedMessage('')
   }
 
   function openEmergencyProfile() {
@@ -896,6 +954,30 @@ function App() {
     )
   }
 
+  function updateSleepPlanField(field, value) {
+    setSleepPlan((currentPlan) => ({
+      ...currentPlan,
+      [field]: value,
+    }))
+    setSleepPlanSavedMessage('')
+  }
+
+  function saveSleepPlan(event) {
+    event.preventDefault()
+    const updatedPlan = {
+      ...sleepPlan,
+      savedAt: new Date().toISOString(),
+    }
+
+    if (saveStoredValue(SLEEP_PLAN_STORAGE_KEY, updatedPlan)) {
+      setSleepPlan(updatedPlan)
+      setSleepPlanSavedMessage('Sleep plan saved on this device.')
+      return
+    }
+
+    setSleepPlanSavedMessage('Sleep plan could not be saved in this browser.')
+  }
+
   function saveCurrentStrategy() {
     if (!activeFlow) {
       return
@@ -979,6 +1061,7 @@ function App() {
             onOpenProfile={openProfile}
             onOpenSafeFoods={openSafeFoods}
             onOpenSavedStrategies={openSavedStrategies}
+            onOpenSleepSupport={openSleepSupport}
             onOpenToiletingSupport={openToiletingSupport}
           />
         )}
@@ -1028,6 +1111,7 @@ function App() {
             savedMessage={dailyCheckInSavedMessage}
             onBack={returnHome}
             onChange={updateDailyCheckInField}
+            onOpenSleepSupport={openSleepSupport}
             onSave={saveDailyCheckIn}
           />
         )}
@@ -1119,6 +1203,16 @@ function App() {
             onDelete={deleteFundingTrackerEntry}
             onEdit={editFundingTrackerEntry}
             onSave={saveFundingTrackerEntry}
+          />
+        )}
+
+        {currentView === 'sleepSupport' && (
+          <SleepSupportScreen
+            plan={sleepPlan}
+            savedMessage={sleepPlanSavedMessage}
+            onBack={returnHome}
+            onChange={updateSleepPlanField}
+            onSave={saveSleepPlan}
           />
         )}
 
